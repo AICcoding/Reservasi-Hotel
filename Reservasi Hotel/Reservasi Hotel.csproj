@@ -51,6 +51,12 @@
     <Compile Include="cari_no_kamar.Designer.cs">
       <DependentUpon>cari_no_kamar.cs</DependentUpon>
     </Compile>
+    <Compile Include="detail_tamu_satu_kamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="detail_tamu_satu_kamar.Designer.cs">
+      <DependentUpon>detail_tamu_satu_kamar.cs</DependentUpon>
+    </Compile>
     <Compile Include="conectionservice.cs" />
     <Compile Include="detail_kamar.cs">
       <SubType>Form</SubType>
@@ -98,6 +104,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="cari_no_kamar.resx">
       <DependentUpon>cari_no_kamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="detail_tamu_satu_kamar.resx">
+      <DependentUpon>detail_tamu_satu_kamar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="detail_kamar.resx">
       <DependentUpon>detail_kamar.cs</DependentUpon>
