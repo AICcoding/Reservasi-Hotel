@@ -1,4 +1,4 @@
-CREATE TABLE `reservasi` (
+CREATE DATABASE reservasi;USE reservasi;CREATE TABLE `reservasi` (
 `id` int NOT NULL,
 `id_kamar` int NULL,
 `tgl_check_in` date NULL,

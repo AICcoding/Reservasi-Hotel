@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,6 +13,7 @@ namespace Reservasi_Hotel
 {
     public partial class cari_no_kamar : Form
     {
+        MySqlConnection conn = conectionservice.getconection();
         public cari_no_kamar()
         {
             InitializeComponent();

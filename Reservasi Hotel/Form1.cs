@@ -27,5 +27,11 @@ namespace Reservasi_Hotel
         {
             MessageBox.Show("konden dadi");
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            check_in a = new check_in();
+            DialogResult dr = a.ShowDialog();
+        }
     }
 }
