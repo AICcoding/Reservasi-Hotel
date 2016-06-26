@@ -16,6 +16,8 @@ namespace Reservasi_Hotel
         System.Windows.Forms.Form f = System.Windows.Forms.Application.OpenForms["detail_tamu_satu_kamar"];
         MySqlConnection conn = conectionservice.getconection();
 
+        string tgl, jam, id_kamar;
+
         public check_in()
         {
             InitializeComponent();
@@ -59,6 +61,12 @@ namespace Reservasi_Hotel
 
         private void check_inn()
         {
+            //---------
+            tgl = DateTime.Now.ToString("yyyy-M-d");
+            jam = DateTime.Now.ToString("H:m:s");
+            id_kamar = comboBox1.SelectedItem.ToString();
+            //---------
+
             try
             {
                 string id, no_telp, nama, alamat, nomor_kamar;
@@ -95,7 +103,10 @@ namespace Reservasi_Hotel
                         }
                         conn.Close();
                     }
-                    insert_reservasi();
+                    if(label5.ForeColor == Color.Green)
+                    {
+                        insert_reservasi();
+                    }
                     insert_trx();
                     MessageBox.Show("Berhasil check in!\nNomor kamar " + nomor_kamar, "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     comboBox1.SelectedIndex = 0;
@@ -113,11 +124,9 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string id_kamar, tgl, jam;
-                id_kamar = comboBox1.SelectedItem.ToString();
-                tgl = DateTime.Now.ToString("yyyy-M-d");
-                jam = DateTime.Now.ToString("H:m:s");
-                string SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in) VALUES ('" + id_kamar + "','" + tgl + "','" + jam + "');";
+                string SQL = "";
+                
+                SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in) VALUES ('" + id_kamar + "','" + tgl + "','" + jam + "');";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -139,7 +148,7 @@ namespace Reservasi_Hotel
             try
             {
                 string id_reservasi, id_tamu;
-                string SQL = "SELECT MAX(id) FROM reservasi;";
+                string SQL = "SELECT id FROM reservasi WHERE id_kamar = " + id_kamar + " AND status_out = 0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 id_reservasi = Convert.ToString(cmd.ExecuteScalar());
@@ -147,7 +156,7 @@ namespace Reservasi_Hotel
 
                 id_tamu = textBox2.Text;
                 id_tamu = id_tamu.Trim();
-                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu) VALUES ('" + id_reservasi + "','" + id_tamu + "');";
+                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu, tgl_check_in, jam_check_in) VALUES ('" + id_reservasi + "','" + id_tamu + "','" + tgl + "','" + jam + "');";
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();

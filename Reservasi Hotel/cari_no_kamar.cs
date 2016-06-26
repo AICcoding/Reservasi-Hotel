@@ -17,12 +17,27 @@ namespace Reservasi_Hotel
         public cari_no_kamar()
         {
             InitializeComponent();
+            isi_kamar();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             detail_kamar a = new detail_kamar();
+            a.nomorKamar = Convert.ToInt32(comboBox1.SelectedItem.ToString());
             DialogResult dr = a.ShowDialog();
+        }
+
+        private void isi_kamar()
+        {
+            comboBox1.Items.Add("1");
+            comboBox1.Items.Add("2");
+            comboBox1.Items.Add("3");
+            comboBox1.Items.Add("4");
+            comboBox1.Items.Add("5");
+            comboBox1.Items.Add("6");
+            comboBox1.Items.Add("7");
+            comboBox1.Items.Add("8");
+            comboBox1.SelectedIndex = 0;
         }
     }
 }
