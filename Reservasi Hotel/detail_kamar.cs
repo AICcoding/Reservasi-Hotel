@@ -38,31 +38,38 @@ namespace Reservasi_Hotel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(jumlahOrang == 1)
+            if(dataGridView2.Rows.Count > 0)
             {
-                MessageBox.Show("Ini merupakan rancangan tagihan untuk org terakhir (1 org)");
-                pembayaran1 a = new pembayaran1();
-                DialogResult dr = a.ShowDialog();
-            }
-            else if(jumlahOrang > 1 && dataGridView2.Rows.Count == 1)
-            {
-                MessageBox.Show("Ini merupakan rancangan tagihan untuk BUKAN org terakhir (1 org)");
-                pembayaran2 b = new pembayaran2();
-                DialogResult dr1 = b.ShowDialog();
-            }
-            else if(jumlahOrang > dataGridView2.Rows.Count && dataGridView2.Rows.Count > 1)
-            {
+                if (jumlahOrang == 1)
+                {
+                    MessageBox.Show("Ini merupakan rancangan tagihan untuk org terakhir (1 org)");
+                    pembayaran1 a = new pembayaran1(nomorKamar, dataGridView2.Rows[0].Cells[0].Value.ToString());
+                    DialogResult dr = a.ShowDialog();
+                }
+                else if (jumlahOrang > 1 && dataGridView2.Rows.Count == 1)
+                {
+                    MessageBox.Show("Ini merupakan rancangan tagihan untuk BUKAN org terakhir (1 org)");
+                    pembayaran2 b = new pembayaran2();
+                    DialogResult dr1 = b.ShowDialog();
+                }
+                else if (jumlahOrang > dataGridView2.Rows.Count && dataGridView2.Rows.Count > 1)
+                {
 
-                MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan MASIH ada org di kamar");
-                pembayaran3 c = new pembayaran3();
-                DialogResult dr2 = c.ShowDialog();
-            }
-            else if(jumlahOrang == dataGridView2.Rows.Count)
-            {
+                    MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan MASIH ada org di kamar");
+                    pembayaran3 c = new pembayaran3();
+                    DialogResult dr2 = c.ShowDialog();
+                }
+                else if (jumlahOrang == dataGridView2.Rows.Count)
+                {
 
-                MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan TIDAK ada org di kamar");
-                pembayaran4 d = new pembayaran4();
-                DialogResult dr3 = d.ShowDialog();
+                    MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan TIDAK ada org di kamar");
+                    pembayaran4 d = new pembayaran4();
+                    DialogResult dr3 = d.ShowDialog();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Silahkan pilih pelanggan yang check out terlebih dahulu!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -93,7 +100,7 @@ namespace Reservasi_Hotel
             using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM reservasi WHERE id_kamar = " + nomorKamar + " AND status_out = 0;", conn))
             {
                 conn.Open();
-                jumlahOrang = 0;
+                //jumlahOrang = 0;
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
@@ -110,7 +117,42 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            dataGridView2.Rows.Add(id_tamu[comboBox1.SelectedIndex], comboBox1.SelectedItem);
+            if (cek_sudah_ada_didaftar() == false)
+            {
+                dataGridView2.Rows.Add(id_tamu[comboBox1.SelectedIndex], comboBox1.SelectedItem);
+            }
+        }
+
+        private bool cek_sudah_ada_didaftar()
+        {
+            bool status = false;
+            foreach (DataGridViewRow dr in dataGridView2.Rows)
+            {
+                if(dr.Cells[0].Value.ToString() == id_tamu[comboBox1.SelectedIndex])
+                {
+                    status = true;
+                    break;
+                }
+            }
+            return status;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dataGridView2.Rows.RemoveAt(dataGridView2.CurrentCell.RowIndex);
+            }
+            catch(Exception err)
+            {
+
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            dataGridView2.Rows.Clear();
+            dataGridView2.Refresh();
         }
     }
 }
