@@ -29,7 +29,7 @@ namespace Reservasi_Hotel
                 conn.Open();
                 MySqlDataAdapter da = new MySqlDataAdapter();
                 MySqlCommand command = conn.CreateCommand();
-                command.CommandText = "SELECT tamu.nama, tamu.alamat, tamu.telepon FROM transaksi, tamu WHERE transaksi.id_tamu=tamu.id AND tgl_check_out IS NULL;";
+                command.CommandText = "SELECT tamu.id, tamu.nama, tamu.alamat, tamu.telepon FROM transaksi, tamu WHERE transaksi.id_tamu=tamu.id AND tgl_check_out IS NULL;";
                 da.SelectCommand = command;
                 DataSet ds = new DataSet();
                 da.Fill(ds, "hasil");
@@ -37,9 +37,10 @@ namespace Reservasi_Hotel
                 dataGridView1.DataMember = "hasil";
                 conn.Close();
 
-                dataGridView1.Columns[0].HeaderText = "Nama tamu";
-                dataGridView1.Columns[1].HeaderText = "Alamat";
-                dataGridView1.Columns[2].HeaderText = "Nomor telp.";
+                dataGridView1.Columns[0].HeaderText = "Nomor identitas";
+                dataGridView1.Columns[1].HeaderText = "Nama tamu";
+                dataGridView1.Columns[2].HeaderText = "Alamat";
+                dataGridView1.Columns[3].HeaderText = "Nomor telp.";
 
             }
             catch (Exception ex)

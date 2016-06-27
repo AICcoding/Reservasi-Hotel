@@ -107,16 +107,51 @@ namespace Reservasi_Hotel
                     {
                         insert_reservasi();
                     }
-                    insert_trx();
-                    MessageBox.Show("Berhasil check in!\nNomor kamar " + nomor_kamar, "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    comboBox1.SelectedIndex = 0;
-                    hapus_form();
+                    
+                    if (cek_sudah_check_in_disana((id))==false)
+                    {
+                        insert_trx();
+                        MessageBox.Show("Check in berhasil dengan nomor kamar " + nomor_kamar +".", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        comboBox1.SelectedIndex = 0;
+                        hapus_form();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tamu dengan nomor identitas: '" + id + "' SUDAH check in di kamar " + id_kamar + ".", "Gagal check in", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }             
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 conn.Close();
+            }
+        }
+
+        private bool cek_sudah_check_in_disana(string id_tamu)
+        {
+            try
+            {
+                int jumlah_baris;
+                string SQL = "SELECT COUNT(*) FROM transaksi WHERE id_tamu = " + id_tamu + ";";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                jumlah_baris = Convert.ToInt32(cmd.ExecuteScalar());
+                conn.Close(); 
+                if(jumlah_baris > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+                return false;
             }
         }
 

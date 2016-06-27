@@ -22,9 +22,17 @@ namespace Reservasi_Hotel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            detail_kamar a = new detail_kamar();
-            a.nomorKamar = Convert.ToInt32(comboBox1.SelectedItem.ToString());
-            DialogResult dr = a.ShowDialog();
+            string no_kamar = comboBox1.SelectedItem.ToString();
+            if(cek_kamar_sudah_terisi(no_kamar)==true)
+            {
+                detail_kamar a = new detail_kamar();
+                a.nomorKamar = Convert.ToInt32(comboBox1.SelectedItem.ToString());
+                DialogResult dr = a.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Kamar " + no_kamar + " masih kosong!", "Gagal check out", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void isi_kamar()
@@ -38,6 +46,33 @@ namespace Reservasi_Hotel
             comboBox1.Items.Add("7");
             comboBox1.Items.Add("8");
             comboBox1.SelectedIndex = 0;
+        }
+
+        private bool cek_kamar_sudah_terisi(string id_kamar)
+        {
+            try
+            {
+                int jumlah_baris;
+                string SQL = "SELECT COUNT(*) FROM reservasi WHERE id_kamar = " + id_kamar + ";";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                jumlah_baris = Convert.ToInt32(cmd.ExecuteScalar());
+                conn.Close();
+                if (jumlah_baris > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+                return false;
+            }
         }
     }
 }
