@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `transaksi_tamu` (
 --
 DROP TABLE IF EXISTS `transaksi_tamu`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `transaksi_tamu` AS select `transaksi`.`id` AS `id`,`transaksi`.`id_reservasi` AS `id_reservasi`,`transaksi`.`id_tamu` AS `id_tamu`,`tamu`.`nama` AS `nama`,`tamu`.`alamat` AS `alamat`,`tamu`.`telepon` AS `telepon`,`id_kamar` AS `id_kamar`,`transaksi`.`tgl_check_out` AS `tgl_check_out`,`transaksi`.`jam_check_out` AS `jam_check_out`,`transaksi`.`jumlah_bayar` AS `jumlah_bayar`,`tgl_check_in` AS `tgl_check_in`,`jam_check_in` AS `jam_check_in` from ((`tamu` join `transaksi` on((`transaksi`.`id_tamu` = `tamu`.`id`))) join `reservasi` on((`transaksi`.`id_reservasi` = `id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `transaksi_tamu` AS select `transaksi`.`id` AS `id`,`transaksi`.`id_reservasi` AS `id_reservasi`,`transaksi`.`id_tamu` AS `id_tamu`,`tamu`.`nama` AS `nama`,`tamu`.`alamat` AS `alamat`,`tamu`.`telepon` AS `telepon`,`id_kamar` AS `id_kamar`,`transaksi`.`tgl_check_out` AS `tgl_check_out`,`transaksi`.`jam_check_out` AS `jam_check_out`,`transaksi`.`jumlah_bayar` AS `jumlah_bayar`,`tgl_check_in` AS `tgl_check_in`,`jam_check_in` AS `jam_check_in` from ((`tamu` join `transaksi` on((`transaksi`.`id_tamu` = `tamu`.`id`))) join `reservasi` on((`transaksi`.`id_reservasi` = `reservasi.id`)));
 
 --
 -- Indexes for dumped tables
