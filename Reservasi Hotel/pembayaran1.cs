@@ -14,11 +14,12 @@ namespace Reservasi_Hotel
     public partial class pembayaran1 : Form
     {
         MySqlConnection conn = conectionservice.getconection();
-        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total;
+        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_trx, id_reservasi;
         public pembayaran1(int nomor_kamar, string id_tamu)
         {
             InitializeComponent();
             harga_total = 0;
+            cari_id_transaksi_dan_reservasi(nomor_kamar, id_tamu);
             init(nomor_kamar, id_tamu);
         }
 
@@ -168,7 +169,70 @@ namespace Reservasi_Hotel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+            try
+            {
+                string tgl, jam;
+                tgl = DateTime.Now.ToString("yyyy-M-d");
+                jam = DateTime.Now.ToString("H:m:s");
+                string SQL = "UPDATE transaksi SET tgl_check_out='" + tgl + "', jam_check_out='" + jam + "', jumlah_bayar='" + harga_total + "' WHERE id=" + id_trx + ";";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                }
+                conn.Close();
+
+                SQL = "UPDATE reservasi SET temp_bayar='" + harga_total + "', status_out=1 WHERE id=" + id_reservasi + ";";
+                conn.Open();
+                cmd = new MySqlCommand(SQL, conn);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+
+                }
+                conn.Close();
+
+                MessageBox.Show("Berhasil melakukan pembayaran!", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                button1.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
+        }
+
+        private void cari_id_transaksi_dan_reservasi(int nomor_kamar, string id_tamu)
+        {
+            try
+            {
+                string SQL = "SELECT id FROM reservasi WHERE id_kamar=" + nomor_kamar + ";";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    id_reservasi = Convert.ToInt32(reader.GetString("id"));
+                }
+                conn.Close();
+
+                SQL = "SELECT id FROM transaksi WHERE id_reservasi=" + id_reservasi + " AND id_tamu=" + id_tamu + ";";
+                conn.Open();
+                cmd = new MySqlCommand(SQL, conn);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    id_trx = Convert.ToInt32(reader.GetString("id"));
+                }
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
         }
     }
 }
