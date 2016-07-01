@@ -49,7 +49,7 @@ namespace Reservasi_Hotel
                 else if (jumlahOrang > 1 && dataGridView2.Rows.Count == 1)
                 {
                     MessageBox.Show("Ini merupakan rancangan tagihan untuk BUKAN org terakhir (1 org)");
-                    pembayaran2 b = new pembayaran2();
+                    pembayaran2 b = new pembayaran2(nomorKamar, dataGridView2.Rows[0].Cells[0].Value.ToString(), Convert.ToInt32(label10.Text));
                     DialogResult dr1 = b.ShowDialog();
                 }
                 else if (jumlahOrang > dataGridView2.Rows.Count && dataGridView2.Rows.Count > 1)
@@ -153,6 +153,13 @@ namespace Reservasi_Hotel
         {
             dataGridView2.Rows.Clear();
             dataGridView2.Refresh();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Ini merupakan rancangan tagihan untuk BUKAN org terakhir (1 org)");
+            pembayaran2 b = new pembayaran2(nomorKamar, dataGridView2.Rows[0].Cells[0].Value.ToString(), Convert.ToInt32(sisaBayar));
+            DialogResult dr1 = b.ShowDialog();
         }
     }
 }

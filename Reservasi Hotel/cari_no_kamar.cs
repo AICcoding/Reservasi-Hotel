@@ -31,7 +31,7 @@ namespace Reservasi_Hotel
             }
             else
             {
-                MessageBox.Show("Kamar " + no_kamar + " masih kosong!", "Gagal check out", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Kamar " + no_kamar + " Kosong!", "Gagal check out", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Reservasi_Hotel
             try
             {
                 int jumlah_baris;
-                string SQL = "SELECT COUNT(*) FROM reservasi WHERE id_kamar = " + id_kamar + ";";
+                string SQL = "SELECT COUNT(*) FROM reservasi WHERE id_kamar = " + id_kamar + " AND status_out=0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 jumlah_baris = Convert.ToInt32(cmd.ExecuteScalar());

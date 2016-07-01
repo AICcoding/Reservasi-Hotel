@@ -57,6 +57,7 @@ namespace Reservasi_Hotel
 
                 jumlah_ekstra_bed(nomor_kamar);
                 lama_sewa = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
+                lama_sewa++;
                 harga_total += (lama_sewa * 100000);
                 label7.Text = "Rp. " + harga_total;
             }
@@ -208,7 +209,7 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string SQL = "SELECT id FROM reservasi WHERE id_kamar=" + nomor_kamar + ";";
+                string SQL = "SELECT id FROM reservasi WHERE id_kamar=" + nomor_kamar + "AND status_out=0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
