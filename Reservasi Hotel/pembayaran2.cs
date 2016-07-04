@@ -15,7 +15,7 @@ namespace Reservasi_Hotel
     {
     
         MySqlConnection conn = conectionservice.getconection();
-        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_trx, id_reservasi, sisa_bayar, temp_bayar;
+        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_reservasi, sisa_bayar, temp_bayar;
         string id_tamu_s;
         string tgl_c, jam_c;
 

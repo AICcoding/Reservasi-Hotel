@@ -16,12 +16,15 @@ namespace Reservasi_Hotel
         System.Windows.Forms.Form f = System.Windows.Forms.Application.OpenForms["detail_tamu_satu_kamar"];
         MySqlConnection conn = conectionservice.getconection();
 
-        string tgl, jam, id_kamar;
+        string tgl, jam, id_kamar, id_tamu_lama, id_tamu_baru;
+        bool sudah_mengetik, status_check_in;
 
         public check_in()
         {
             InitializeComponent();
-            isi_kamar(); 
+            label6.Text = "";
+            sudah_mengetik = false;
+            status_check_in = false;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -37,7 +40,7 @@ namespace Reservasi_Hotel
                 id = textBox2.Text;
                 id = id.Trim();
 
-                string SQL = "SELECT COUNT(*) FROM tamu WHERE id='"+id+"'";
+                string SQL = "SELECT COUNT(*) FROM tamu WHERE id_tamu='"+id+"'";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -64,7 +67,7 @@ namespace Reservasi_Hotel
             //---------
             tgl = DateTime.Now.ToString("yyyy-M-d");
             jam = DateTime.Now.ToString("H:m:s");
-            id_kamar = comboBox1.SelectedItem.ToString();
+            id_kamar = textBox1.Text;
             //---------
 
             try
@@ -79,45 +82,41 @@ namespace Reservasi_Hotel
                 alamat = textBox5.Text;
                 alamat = alamat.Trim();
 
-                nomor_kamar = comboBox1.SelectedItem.ToString();
+                nomor_kamar = textBox1.Text;
 
-                if (id == "" || no_telp == "" || nama == "" || alamat == "")
+                if (id == "" || no_telp == "" || nama == "" || alamat == "" || nomor_kamar == "")
                 {
-                    MessageBox.Show("Form masukan belum diisi !", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Anda belum memasukkan semua data!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
                     if (cek_tamu_sudah_ada_di_db() == true)
                     {
-                        //MessageBox.Show("Berhasil check in!\nNomor kamar " + nomor_kamar, "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        update_tamu(id);
                     }
                     else
                     {
-                        string SQL = "INSERT INTO tamu (id, nama, alamat, telepon) VALUES ('" + id + "','" + nama + "','" + alamat + "','" + no_telp + "');";
-                        conn.Open();
-                        MySqlCommand cmd = new MySqlCommand(SQL, conn);
-                        MySqlDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
+                        tambah_tamu(id, nama, alamat, no_telp);
+                    }   
+                 
+                    //cek reservasi sudah ada atau belum
+                    //tambah reservasi jika belum
+                    //buat transaksi yang mengacu ke id reservasi
+                    if(sudah_ada_reservasi(nomor_kamar)==false)
+                    {
+                        tambah_reservasi(nomor_kamar);
+                        tambah_transaksi(nomor_kamar, id);
+                    }
+                    else
+                    {
+                        tambah_transaksi(nomor_kamar, id);
+                    }
 
-                        }
-                        conn.Close();
-                    }
-                    if(label5.ForeColor == Color.Green)
+                    if(status_check_in==true)
                     {
-                        insert_reservasi();
-                    }
-                    
-                    if (cek_sudah_check_in_disana((id))==false)
-                    {
-                        insert_trx();
-                        MessageBox.Show("Check in berhasil dengan nomor kamar " + nomor_kamar +".", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        comboBox1.SelectedIndex = 0;
+                        MessageBox.Show("Check in berhasil!\n\nNomor kamar: " + nomor_kamar, "Berhasil check in", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         hapus_form();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Tamu dengan nomor identitas: '" + id + "' SUDAH check in di kamar " + id_kamar + ".", "Gagal check in", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        status_check_in = false;
                     }
                 }             
             }
@@ -128,40 +127,15 @@ namespace Reservasi_Hotel
             }
         }
 
-        private bool cek_sudah_check_in_disana(string id_tamu)
+        private void tambah_reservasi(string id_kamar)
         {
             try
             {
-                int jumlah_baris;
-                string SQL = "SELECT COUNT(*) FROM transaksi WHERE id_tamu = " + id_tamu + ";";
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(SQL, conn);
-                jumlah_baris = Convert.ToInt32(cmd.ExecuteScalar());
-                conn.Close(); 
-                if(jumlah_baris > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                conn.Close();
-                return false;
-            }
-        }
+                string tgl_sekarang, jam_sekarang;
+                tgl_sekarang = DateTime.Now.ToString("yyyy-M-d");
+                jam_sekarang = DateTime.Now.ToString("H:m:s");
 
-        private void insert_reservasi()
-        {
-            try
-            {
-                string SQL = "";
-                
-                SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in) VALUES ('" + id_kamar + "','" + tgl + "','" + jam + "');";
+                string SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in, temp_bayar, status_out) VALUES ('" + id_kamar + "','" + tgl_sekarang + "','" + jam_sekarang + "', 0, 0);";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -178,28 +152,36 @@ namespace Reservasi_Hotel
             }
         }
 
-        private void insert_trx()
+        private void tambah_transaksi(string id_kamar, string id_tamu)
         {
             try
             {
-                string id_reservasi, id_tamu;
-                string SQL = "SELECT id FROM reservasi WHERE id_kamar = " + id_kamar + " AND status_out = 0;";
+                string tgl_sekarang, jam_sekarang, id_reservasi;
+                tgl_sekarang = DateTime.Now.ToString("yyyy-M-d");
+                jam_sekarang = DateTime.Now.ToString("H:m:s");
+                id_reservasi = "";
+
+                string SQL = "SELECT id_reservasi FROM reservasi WHERE id_kamar="+id_kamar+" AND status_out=0 ORDER BY id_reservasi DESC;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
-                id_reservasi = Convert.ToString(cmd.ExecuteScalar());
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    id_reservasi = reader.GetString("id_reservasi");
+                    break;
+                }
                 conn.Close();
 
-                id_tamu = textBox2.Text;
-                id_tamu = id_tamu.Trim();
-                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu, tgl_check_in, jam_check_in) VALUES ('" + id_reservasi + "','" + id_tamu + "','" + tgl + "','" + jam + "');";
+                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu, tgl_masuk, jam_masuk, jumlah_bayar) VALUES ('" + id_reservasi + "', '" + id_tamu + "', '" + tgl_sekarang + "', '" + jam_sekarang + "', 0);";
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
-                MySqlDataReader reader = cmd.ExecuteReader();
+                reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
 
                 }
                 conn.Close();
+                status_check_in = true;
             }
             catch (Exception ex)
             {
@@ -207,51 +189,16 @@ namespace Reservasi_Hotel
                 conn.Close();
             }
         }
-
-        private void hapus_form()
-        {
-            textBox2.Text = "";
-            textBox4.Text = "";
-            textBox3.Text = "";
-            textBox5.Text = "";
-        }
-
-        private void isi_kamar()
-        {
-            comboBox1.Items.Add("1");
-            comboBox1.Items.Add("2");
-            comboBox1.Items.Add("3");
-            comboBox1.Items.Add("4");
-            comboBox1.Items.Add("5");
-            comboBox1.Items.Add("6");
-            comboBox1.Items.Add("7");
-            comboBox1.Items.Add("8");
-            comboBox1.SelectedIndex = 0;
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string nama_kamar;
-            nama_kamar = comboBox1.SelectedItem.ToString();
-            if(apakah_penuh(nama_kamar)==true)
-            {
-                label5.Text = "Kamar sudah terisi!";
-                label5.ForeColor = Color.Red;
-                button2.Enabled = true;
-            }
-            else
-            {
-                label5.Text = "Kamar masih kosong!";
-                label5.ForeColor = Color.Green;
-                button2.Enabled = false;
-            }
-        }
-
-        private bool apakah_penuh(string kamar)
+        
+        private bool sudah_ada_reservasi(string no_kamar)
         {
             try
-            {             
-                string SQL = "SELECT COUNT(*) FROM reservasi WHERE id_kamar='" + kamar + "'";
+            {
+                string id;
+                id = textBox2.Text;
+                id = id.Trim();
+
+                string SQL = "SELECT COUNT(*) FROM reservasi WHERE id_kamar='" + no_kamar + "' AND status_out=0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -273,11 +220,129 @@ namespace Reservasi_Hotel
             }
         }
 
+        private void tambah_tamu(string id, string nama, string alamat, string no_telp)
+        {
+            try
+            {
+                string SQL = "INSERT INTO tamu (id_tamu, nama, alamat, telepon) VALUES ('" + id + "','" + nama + "','" + alamat + "','" + no_telp + "');";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+
+                }
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
+        }
+
+        private void update_tamu(string id_tamu)
+        {
+            try
+            {
+                string nama, alamat, no_telp;
+                nama = textBox3.Text;
+                alamat = textBox5.Text;
+                no_telp = textBox4.Text;
+                string SQL = "UPDATE tamu set nama='" + nama + "', alamat='" + alamat + "', telepon='" + no_telp + "' WHERE id_tamu='" + id_tamu + "';";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+
+                }
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
+        }
+
+        private void hapus_form()
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox4.Text = "";
+            textBox3.Text = "";
+            textBox5.Text = "";
+            label6.Text = "";
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            //((detail_tamu_satu_kamar)f).id_kamar = int.Parse(comboBox1.SelectedItem.ToString());
-            detail_tamu_satu_kamar a = new detail_tamu_satu_kamar(int.Parse(comboBox1.SelectedItem.ToString()));
-            DialogResult dr = a.ShowDialog();
+            using (var form = new pilih_kamar())
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    textBox1.Text = form.ReturnValue1;
+                }
+            }
+        }   
+
+        private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            sudah_mengetik = true;
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if(sudah_mengetik==true)
+            {
+                id_tamu_lama = id_tamu_baru;
+                id_tamu_baru = textBox2.Text;
+                if(id_tamu_lama!=id_tamu_baru)
+                {
+                    try
+                    {
+                        bool ada_baris = false;
+                        string SQL = "SELECT * FROM tamu WHERE id_tamu = '" + id_tamu_baru + "';";
+                        conn.Open();
+                        MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                        cmd = new MySqlCommand(SQL, conn);
+                        MySqlDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            label6.ForeColor = Color.Green;
+                            label6.Text = "*Data tamu sudah tersimpan!.";
+
+                            textBox3.Text = reader.GetString("nama");
+                            textBox4.Text = reader.GetString("telepon");
+                            textBox5.Text = reader.GetString("alamat");
+                            ada_baris = true;
+                            break;
+                        }
+                        if(ada_baris==false)
+                        {
+                            label6.ForeColor = Color.Red;
+                            label6.Text = "*Data tamu belum ada! Silahkan memasukkannya secara manual.";
+
+                            textBox3.Text = "";
+                            textBox4.Text = "";
+                            textBox5.Text = "";
+                        }
+                        conn.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        conn.Close();
+                    }
+                }
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }        
     }
 }

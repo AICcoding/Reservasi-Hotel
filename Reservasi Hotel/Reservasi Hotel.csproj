@@ -53,11 +53,35 @@
     <Compile Include="cari_no_kamar.Designer.cs">
       <DependentUpon>cari_no_kamar.cs</DependentUpon>
     </Compile>
-    <Compile Include="detail_tamu_satu_kamar.cs">
+    <Compile Include="data_extra_bed.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="detail_tamu_satu_kamar.Designer.cs">
-      <DependentUpon>detail_tamu_satu_kamar.cs</DependentUpon>
+    <Compile Include="data_extra_bed.Designer.cs">
+      <DependentUpon>data_extra_bed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="data_kamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="data_kamar.Designer.cs">
+      <DependentUpon>data_kamar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="data_konsumsi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="data_konsumsi.Designer.cs">
+      <DependentUpon>data_konsumsi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="pilih_kamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="pilih_kamar.Designer.cs">
+      <DependentUpon>pilih_kamar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="data_tarif.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="data_tarif.Designer.cs">
+      <DependentUpon>data_tarif.cs</DependentUpon>
     </Compile>
     <Compile Include="conectionservice.cs" />
     <Compile Include="detail_kamar.cs">
@@ -77,6 +101,36 @@
     </Compile>
     <Compile Include="check_in.Designer.cs">
       <DependentUpon>check_in.cs</DependentUpon>
+    </Compile>
+    <Compile Include="cetak_biru.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="cetak_biru.Designer.cs">
+      <DependentUpon>cetak_biru.cs</DependentUpon>
+    </Compile>
+    <Compile Include="kamar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="kamar.Designer.cs">
+      <DependentUpon>kamar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="konsumsi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="konsumsi.Designer.cs">
+      <DependentUpon>konsumsi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="extra_bed.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="extra_bed.Designer.cs">
+      <DependentUpon>extra_bed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tarif.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tarif.Designer.cs">
+      <DependentUpon>tarif.cs</DependentUpon>
     </Compile>
     <Compile Include="pembayaran4.cs">
       <SubType>Form</SubType>
@@ -107,8 +161,20 @@
     <EmbeddedResource Include="cari_no_kamar.resx">
       <DependentUpon>cari_no_kamar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="detail_tamu_satu_kamar.resx">
-      <DependentUpon>detail_tamu_satu_kamar.cs</DependentUpon>
+    <EmbeddedResource Include="data_extra_bed.resx">
+      <DependentUpon>data_extra_bed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data_kamar.resx">
+      <DependentUpon>data_kamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data_konsumsi.resx">
+      <DependentUpon>data_konsumsi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pilih_kamar.resx">
+      <DependentUpon>pilih_kamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="data_tarif.resx">
+      <DependentUpon>data_tarif.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="detail_kamar.resx">
       <DependentUpon>detail_kamar.cs</DependentUpon>
@@ -118,6 +184,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="check_in.resx">
       <DependentUpon>check_in.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="cetak_biru.resx">
+      <DependentUpon>cetak_biru.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="kamar.resx">
+      <DependentUpon>kamar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="konsumsi.resx">
+      <DependentUpon>konsumsi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="extra_bed.resx">
+      <DependentUpon>extra_bed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tarif.resx">
+      <DependentUpon>tarif.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="pembayaran4.resx">
       <DependentUpon>pembayaran4.cs</DependentUpon>
