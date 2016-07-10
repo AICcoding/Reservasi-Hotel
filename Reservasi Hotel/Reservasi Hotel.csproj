@@ -126,6 +126,12 @@
     <Compile Include="extra_bed.Designer.cs">
       <DependentUpon>extra_bed.cs</DependentUpon>
     </Compile>
+    <Compile Include="pilih_kamar_2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="pilih_kamar_2.Designer.cs">
+      <DependentUpon>pilih_kamar_2.cs</DependentUpon>
+    </Compile>
     <Compile Include="tarif.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,6 +202,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="extra_bed.resx">
       <DependentUpon>extra_bed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="pilih_kamar_2.resx">
+      <DependentUpon>pilih_kamar_2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tarif.resx">
       <DependentUpon>tarif.cs</DependentUpon>

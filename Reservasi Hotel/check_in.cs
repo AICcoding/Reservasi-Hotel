@@ -278,7 +278,7 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (var form = new pilih_kamar())
+            using (var form = new pilih_kamar_2())
             {
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
