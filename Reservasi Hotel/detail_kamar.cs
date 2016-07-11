@@ -77,7 +77,7 @@ namespace Reservasi_Hotel
         {
             MySqlConnection conn = conectionservice.getconection();
             id_tamu = new List<String>();
-            using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transaksi_tamu WHERE id_kamar = "+nomorKamar+ " AND tgl_check_out is null;", conn))
+            using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transaksi_tamu WHERE id_kamar = " + nomorKamar + " AND tgl_keluar is null;", conn))
             {
                 conn.Open();
                 jumlahOrang = 0;
@@ -106,7 +106,7 @@ namespace Reservasi_Hotel
                 {
                     tgl_check_in = dataReader.GetDateTime(2);
                     jam_check_in = Convert.ToDateTime(dataReader.GetString(3));
-                    totalTerbayar = dataReader.GetString(4);
+                    totalTerbayar = dataReader.GetString(6);
                 }
                 conn.Close();
             }
