@@ -25,6 +25,7 @@ namespace Reservasi_Hotel
             label6.Text = "";
             sudah_mengetik = false;
             status_check_in = false;
+            dateTimePicker1.Value = DateTime.Now.AddDays(1);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -72,7 +73,7 @@ namespace Reservasi_Hotel
 
             try
             {
-                string id, no_telp, nama, alamat, nomor_kamar;
+                string id, no_telp, nama, alamat, nomor_kamar, tgl_check_out;
                 id = textBox2.Text;
                 id = id.Trim();
                 no_telp = textBox4.Text;
@@ -81,12 +82,24 @@ namespace Reservasi_Hotel
                 nama = nama.Trim();
                 alamat = textBox5.Text;
                 alamat = alamat.Trim();
+                tgl_check_out = dateTimePicker1.Value.ToString("yyyy-M-d");
 
                 nomor_kamar = textBox1.Text;
+
+                DateTime awal, akhir;
+                String[] tmp_tgl = DateTime.Now.ToString("yyyy-M-d").Split('-');
+                awal = new DateTime(int.Parse(tmp_tgl[0]), int.Parse(tmp_tgl[1]), int.Parse(tmp_tgl[2]));
+                tmp_tgl = tgl_check_out.Split('-');
+                akhir = new DateTime(int.Parse(tmp_tgl[0]), int.Parse(tmp_tgl[1]), int.Parse(tmp_tgl[2]));
+
 
                 if (id == "" || no_telp == "" || nama == "" || alamat == "" || nomor_kamar == "")
                 {
                     MessageBox.Show("Anda belum memasukkan semua data!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else if ((akhir - awal).TotalDays < 1)
+                {
+                    MessageBox.Show("Check out minimal 1 hari setelah check in!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -343,6 +356,14 @@ namespace Reservasi_Hotel
         private void button5_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void textBox4_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }        
     }
 }
