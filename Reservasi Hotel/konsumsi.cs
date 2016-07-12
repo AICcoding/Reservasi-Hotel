@@ -84,7 +84,6 @@ namespace Reservasi_Hotel
             }
             return hasil_nominal;
         }   
-      
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -100,12 +99,18 @@ namespace Reservasi_Hotel
 
         private void button3_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus konsumsi terpilih?", "Hapus konsumsi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            try
             {
-                hapus_konsumsi_terpilih();
-                load_konsumsi();
+                int tes_error = dataGridView1.CurrentCell.RowIndex;
+                DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus konsumsi terpilih?", "Hapus konsumsi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    hapus_konsumsi_terpilih();
+                    load_konsumsi();
+                }
             }
+            catch (Exception er) { }
+            
         }
 
         private void hapus_konsumsi_terpilih()
@@ -133,10 +138,15 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string indek_konsumsi = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
-            data_konsumsi a = new data_konsumsi(indek_konsumsi);
-            DialogResult dr = a.ShowDialog();
-            load_konsumsi();
+            try
+            {
+                string indek_konsumsi = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
+                data_konsumsi a = new data_konsumsi(indek_konsumsi);
+                DialogResult dr = a.ShowDialog();
+                load_konsumsi();
+            }
+            catch (Exception er) { }
+            
         }
     }
 }

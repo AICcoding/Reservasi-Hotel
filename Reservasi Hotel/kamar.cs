@@ -100,12 +100,17 @@ namespace Reservasi_Hotel
 
         private void button3_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus kamar terpilih?", "Hapus kamar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            try
             {
-                hapus_kamar_terpilih();
-                load_kamar();
+                int tes_error = dataGridView1.CurrentCell.RowIndex;
+                DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus kamar terpilih?", "Hapus kamar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    hapus_kamar_terpilih();
+                    load_kamar();
+                }
             }
+            catch (Exception er) { }
         }
 
         private void hapus_kamar_terpilih()
@@ -133,10 +138,15 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string indek_kamar = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
-            data_kamar a = new data_kamar(indek_kamar);
-            DialogResult dr = a.ShowDialog();
-            load_kamar();
+            try
+            {
+                string indek_kamar = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
+                data_kamar a = new data_kamar(indek_kamar);
+                DialogResult dr = a.ShowDialog();
+                load_kamar();
+            }
+            catch (Exception er) { }
+            
         }
     }
 }

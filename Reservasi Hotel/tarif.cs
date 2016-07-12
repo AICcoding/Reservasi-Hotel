@@ -100,12 +100,18 @@ namespace Reservasi_Hotel
 
         private void button3_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus tarif terpilih?", "Hapus tarif", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            try
             {
-                hapus_tarif_terpilih();
-                load_tarif();
+                int tes_error = dataGridView1.CurrentCell.RowIndex;
+                DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus tarif terpilih?", "Hapus tarif", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    hapus_tarif_terpilih();
+                    load_tarif();
+                }
             }
+            catch (Exception er) { }
+            
         }
 
         private void hapus_tarif_terpilih()
@@ -133,10 +139,15 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string indek_tarif = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
-            data_tarif a = new data_tarif(indek_tarif);
-            DialogResult dr = a.ShowDialog();
-            load_tarif();
+            try
+            {
+                string indek_tarif = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
+                data_tarif a = new data_tarif(indek_tarif);
+                DialogResult dr = a.ShowDialog();
+                load_tarif();
+            }
+            catch (Exception er) { }
+            
         }
     }
 }

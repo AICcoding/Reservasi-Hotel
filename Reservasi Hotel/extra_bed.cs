@@ -137,12 +137,17 @@ namespace Reservasi_Hotel
 
         private void button3_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus extra bed terpilih?", "Hapus extra bed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            try
             {
-                hapus_extra_bed_terpilih();
-                load_extra_bed();
+                int tes_error = dataGridView1.CurrentCell.RowIndex;
+                DialogResult dialogResult = MessageBox.Show("Apakah anda yakin ingin menghapus extra bed terpilih?", "Hapus extra bed", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    hapus_extra_bed_terpilih();
+                    load_extra_bed();
+                }
             }
+            catch (Exception er) { }
         }
 
         private void hapus_extra_bed_terpilih()
@@ -170,20 +175,29 @@ namespace Reservasi_Hotel
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string indek_extra_bed = id_extra_bed[dataGridView1.CurrentCell.RowIndex];
-            data_extra_bed a = new data_extra_bed(indek_extra_bed);
-            DialogResult dr = a.ShowDialog();
-            load_extra_bed();
+            try
+            {
+                string indek_extra_bed = id_extra_bed[dataGridView1.CurrentCell.RowIndex];
+                data_extra_bed a = new data_extra_bed(indek_extra_bed);
+                DialogResult dr = a.ShowDialog();
+                load_extra_bed();
+            }
+            catch (Exception er) { }
+            
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Apakah anda yakin layanan extra bed pada kamar " + dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString() + " sudah selesai?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dialogResult == DialogResult.Yes)
+            try
             {
-                update_status_extra_bed_terpilih();
-                load_extra_bed();
+                DialogResult dialogResult = MessageBox.Show("Apakah anda yakin layanan extra bed pada kamar " + dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString() + " sudah selesai?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    update_status_extra_bed_terpilih();
+                    load_extra_bed();
+                }
             }
+            catch (Exception er) { }         
         }
 
         private void update_status_extra_bed_terpilih()

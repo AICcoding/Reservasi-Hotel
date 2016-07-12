@@ -16,13 +16,35 @@ namespace Reservasi_Hotel
         MySqlConnection conn = conectionservice.getconection();
         string keterangan;
         List<string> id_tarif;
+        List<string> tipe_kamar;
 
         public data_kamar(string ket)
         {
             InitializeComponent();
             keterangan = ket;
             id_tarif = new List<string>();
+            tipe_kamar = new List<string>();
+            isi_type_kamar();
+
             init();
+        }
+
+        private void isi_type_kamar()
+        {
+            comboBox2.Items.Add("Standard room");
+            comboBox2.Items.Add("Superior/Premium room");
+            comboBox2.Items.Add("Deluxe room");
+            comboBox2.Items.Add("Junior Suite/Studio room");
+            comboBox2.Items.Add("Suite room");
+            comboBox2.Items.Add("Presidential/penthouse room");
+            comboBox2.SelectedIndex = 0;
+
+            tipe_kamar.Add("Standard room");
+            tipe_kamar.Add("Superior/Premium room");
+            tipe_kamar.Add("Deluxe room");
+            tipe_kamar.Add("Junior Suite/Studio room");
+            tipe_kamar.Add("Suite room");
+            tipe_kamar.Add("Presidential/penthouse room");
         }
 
         private void init()
@@ -30,7 +52,7 @@ namespace Reservasi_Hotel
             sudah_ada_id_kamar(1);
             try
             {
-                string SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif ORDER BY nama_tarif ASC;";
+                string SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif WHERE nama_tarif LIKE '%room%' ORDER BY nama_tarif ASC;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -90,6 +112,16 @@ namespace Reservasi_Hotel
                     }
                     comboBox1.SelectedIndex = indek_tarif;
                     textBox1.Text = reader.GetString("fasilitas");
+                    textBox3.Text = reader.GetString("lantai");
+
+                    for (int i = 0; i < tipe_kamar.Count; i++)
+                    {
+                        if(tipe_kamar[i]==reader.GetString("type"))
+                        {
+                            comboBox2.SelectedIndex = i;
+                            break;
+                        }
+                    }
                 }
                 conn.Close();                
             }
@@ -107,7 +139,7 @@ namespace Reservasi_Hotel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox2.Text.Trim() != "" && textBox1.Text.Trim() != "" && comboBox1.SelectedIndex != -1)
+            if (textBox2.Text.Trim() != "" && textBox1.Text.Trim() != "" && comboBox1.SelectedIndex != -1 && textBox3.Text.Trim() != "" && comboBox2.SelectedIndex != -1)
             {
                 if (keterangan == "tambah")
                 {
@@ -140,12 +172,14 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string no_kamar, id_trf, fasilitas;
+                string no_kamar, id_trf, fasilitas, lantai, tipe;
                 no_kamar = textBox2.Text.Trim();
                 id_trf = id_tarif[comboBox1.SelectedIndex];
                 fasilitas = textBox1.Text.Trim();
+                lantai = textBox3.Text.Trim();
+                tipe = comboBox2.SelectedItem.ToString();
 
-                string SQL = "INSERT INTO kamar (id_kamar, id_tarif, fasilitas) VALUES ('" + no_kamar + "','" + id_trf + "','" + fasilitas + "');";
+                string SQL = "INSERT INTO kamar (id_kamar, id_tarif, fasilitas, lantai, type) VALUES ('" + no_kamar + "','" + id_trf + "','" + fasilitas + "','"+ lantai + "','"+ tipe +"');";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -167,12 +201,14 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string no_kamar, id_trf, fasilitas;
+                string no_kamar, id_trf, fasilitas, lantai, tipe;
                 no_kamar = textBox2.Text.Trim();
                 id_trf = id_tarif[comboBox1.SelectedIndex];
                 fasilitas = textBox1.Text.Trim();
+                lantai = textBox3.Text.Trim();
+                tipe = comboBox2.SelectedItem.ToString();
 
-                string SQL = "UPDATE kamar SET id_kamar='" + no_kamar + "', id_tarif='" + id_trf + "', fasilitas='"+fasilitas+"' WHERE id_kamar='" + keterangan + "';";
+                string SQL = "UPDATE kamar SET id_tarif='" + id_trf + "', fasilitas='"+fasilitas+"', lantai='"+lantai+"', type='"+tipe+"' WHERE id_kamar='" + keterangan + "';";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -254,6 +290,14 @@ namespace Reservasi_Hotel
         }
 
         private void textBox2_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textBox3_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
