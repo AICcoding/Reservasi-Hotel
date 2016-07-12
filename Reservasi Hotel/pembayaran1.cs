@@ -15,12 +15,15 @@ namespace Reservasi_Hotel
     {
         MySqlConnection conn = conectionservice.getconection();
         int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_trx, id_reservasi;
-        public pembayaran1(int nomor_kamar, string id_tamu)
+        int sisaBayar;
+        public pembayaran1(int nomor_kamar, string id_tamu, int sisaBayar)
         {
             InitializeComponent();
             harga_total = 0;
             cari_id_transaksi_dan_reservasi(nomor_kamar, id_tamu);
             init(nomor_kamar, id_tamu);
+            this.sisaBayar = sisaBayar;
+            label7.Text = "Rp " + sisaBayar + ",-";
         }
 
         private void init(int nomor_kamar, string id_tamu)
@@ -29,11 +32,10 @@ namespace Reservasi_Hotel
             {
                 string tgl, jam;
                 DateTime tgl_awal, tgl_akhir;
-                int lama_sewa = 0;
                 tgl_awal = new DateTime(2013, 1, 13);
                 tgl_akhir = new DateTime(2015, 1, 13);
 
-                string SQL = "SELECT *  FROM transaksi_tamu WHERE id_kamar=" + nomor_kamar + " AND id_tamu=" + id_tamu + ";";
+                string SQL = "SELECT * FROM transaksi_tamu WHERE id_kamar=" + nomor_kamar + " AND id_tamu=" + id_tamu + ";";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -42,24 +44,15 @@ namespace Reservasi_Hotel
                     label5.Text = reader.GetString("id_kamar");
                     label10.Text = reader.GetString("nama");
 
-                    tgl = reader.GetDateTime("tgl_check_in").ToString("yyyy-M-d");
-                    jam = reader.GetTimeSpan("jam_check_in").ToString();
+                    tgl = reader.GetDateTime("tgl_masuk").ToString("yyyy-M-d");
+                    jam = reader.GetTimeSpan("jam_masuk").ToString();
                     label6.Text = konversi_tgl_jam(tgl, jam);
 
                     tgl = DateTime.Now.ToString("yyyy-M-d");
                     jam = DateTime.Now.ToString("H:m:s");
                     label8.Text = konversi_tgl_jam(tgl, jam);
-
-                    tgl_awal = reader.GetDateTime("tgl_check_in");
-                    tgl_akhir = DateTime.Now;
                 }
                 conn.Close();
-
-                jumlah_ekstra_bed(nomor_kamar);
-                lama_sewa = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
-                lama_sewa++;
-                harga_total += (lama_sewa * 100000);
-                label7.Text = "Rp. " + harga_total;
             }
             catch (Exception ex)
             {
@@ -130,7 +123,7 @@ namespace Reservasi_Hotel
 
                 jumlah_extra_bed = 0;
                 lama_sewa_extra_bed = 0;
-                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti FROM extra_bed, reservasi WHERE reservasi.id=extra_bed.id_reservasi AND reservasi.id_kamar='" + nomor_kamar + "'";
+                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti FROM extra_bed, reservasi WHERE reservasi.id_reservasi=extra_bed.id_reservasi AND reservasi.id_kamar='" + nomor_kamar + "'";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -175,7 +168,7 @@ namespace Reservasi_Hotel
                 string tgl, jam;
                 tgl = DateTime.Now.ToString("yyyy-M-d");
                 jam = DateTime.Now.ToString("H:m:s");
-                string SQL = "UPDATE transaksi SET tgl_check_out='" + tgl + "', jam_check_out='" + jam + "', jumlah_bayar='" + harga_total + "' WHERE id=" + id_trx + ";";
+                string SQL = "UPDATE transaksi SET tgl_keluar='" + tgl + "', jam_keluar='" + jam + "', jumlah_bayar='" + sisaBayar + "' WHERE id_transaksi=" + id_trx + ";";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -185,7 +178,8 @@ namespace Reservasi_Hotel
                 }
                 conn.Close();
 
-                SQL = "UPDATE reservasi SET temp_bayar='" + harga_total + "', status_out=1 WHERE id=" + id_reservasi + ";";
+                SQL = "UPDATE reservasi SET temp_bayar='" + sisaBayar + "', status_out=1" + ", tgl_check_out='" + tgl + "', jam_check_out='" + jam + "' WHERE id_reservasi=" + id_reservasi + ";";
+                MessageBox.Show(SQL);
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
                 reader = cmd.ExecuteReader();
@@ -209,23 +203,23 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string SQL = "SELECT id FROM reservasi WHERE id_kamar=" + nomor_kamar + "AND status_out=0;";
+                string SQL = "SELECT id_reservasi FROM reservasi WHERE id_kamar=" + nomor_kamar + " AND status_out=0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    id_reservasi = Convert.ToInt32(reader.GetString("id"));
+                    id_reservasi = Convert.ToInt32(reader.GetString("id_reservasi"));
                 }
                 conn.Close();
 
-                SQL = "SELECT id FROM transaksi WHERE id_reservasi=" + id_reservasi + " AND id_tamu=" + id_tamu + ";";
+                SQL = "SELECT id_transaksi FROM transaksi WHERE id_reservasi=" + id_reservasi + " AND id_tamu=" + id_tamu + ";";
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    id_trx = Convert.ToInt32(reader.GetString("id"));
+                    id_trx = Convert.ToInt32(reader.GetString("id_transaksi"));
                 }
                 conn.Close();
             }

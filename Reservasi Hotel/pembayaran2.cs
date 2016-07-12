@@ -39,7 +39,7 @@ namespace Reservasi_Hotel
                 tgl_awal = new DateTime(2013, 1, 13);
                 tgl_akhir = new DateTime(2015, 1, 13);
 
-                string SQL = "SELECT *  FROM transaksi_tamu WHERE id_kamar=" + nomor_kamar + " AND id_tamu=" + id_tamu + ";";
+                string SQL = "SELECT * FROM transaksi_tamu WHERE id_kamar=" + nomor_kamar + " AND id_tamu=" + id_tamu + ";";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -48,8 +48,8 @@ namespace Reservasi_Hotel
                     label5.Text = reader.GetString("id_kamar");
                     label10.Text = reader.GetString("nama");
 
-                    tgl = reader.GetDateTime("tgl_check_in").ToString("yyyy-M-d");
-                    jam = reader.GetTimeSpan("jam_check_in").ToString();
+                    tgl = reader.GetDateTime("tgl_masuk").ToString("yyyy-M-d");
+                    jam = reader.GetTimeSpan("jam_masuk").ToString();
                     label6.Text = konversi_tgl_jam(tgl, jam);
                     tgl_c = tgl;
                     jam_c = jam;
@@ -58,7 +58,7 @@ namespace Reservasi_Hotel
                     jam = DateTime.Now.ToString("H:m:s");
                     label8.Text = konversi_tgl_jam(tgl, jam);
 
-                    tgl_awal = reader.GetDateTime("tgl_check_in");
+                    tgl_awal = reader.GetDateTime("tgl_masuk");
                     tgl_akhir = DateTime.Now;
                 }
                 conn.Close();
