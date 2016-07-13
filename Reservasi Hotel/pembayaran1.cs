@@ -178,7 +178,7 @@ namespace Reservasi_Hotel
                 }
                 conn.Close();
 
-                SQL = "UPDATE reservasi SET temp_bayar='" + sisaBayar + "', status_out=1" + ", tgl_check_out='" + tgl + "', jam_check_out='" + jam + "' WHERE id_reservasi=" + id_reservasi + ";";
+                SQL = "UPDATE reservasi SET temp_bayar= temp_bayar + '" + sisaBayar + "', status_out=1" + ", tgl_check_out='" + tgl + "', jam_check_out='" + jam + "' WHERE id_reservasi=" + id_reservasi + ";";
                 MessageBox.Show(SQL);
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);

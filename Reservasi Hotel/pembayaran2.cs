@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace Reservasi_Hotel
 {
@@ -15,18 +15,19 @@ namespace Reservasi_Hotel
     {
     
         MySqlConnection conn = conectionservice.getconection();
-        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_reservasi, sisa_bayar, temp_bayar;
+        int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_reservasi, sisaBayar, temp_bayar, id_trx;
         string id_tamu_s;
         string tgl_c, jam_c;
 
-        public pembayaran2(int nomor_kamar, string id_tamu, int s_byr)
+        public pembayaran2(int nomor_kamar, string id_tamu, int sisaBayar)
         {
             InitializeComponent();
             harga_total = 0;
-            sisa_bayar = s_byr;
+            this.sisaBayar = sisaBayar;
             cari_id_transaksi_dan_reservasi(nomor_kamar, id_tamu);
             init(nomor_kamar, id_tamu);
             id_tamu_s = id_tamu;
+            label7.Text = "Rp " + sisaBayar + ",-";
         }
 
         private void init(int nomor_kamar, string id_tamu)
@@ -35,7 +36,6 @@ namespace Reservasi_Hotel
             {
                 string tgl, jam;
                 DateTime tgl_awal, tgl_akhir;
-                int lama_sewa = 0;
                 tgl_awal = new DateTime(2013, 1, 13);
                 tgl_akhir = new DateTime(2015, 1, 13);
 
@@ -51,34 +51,12 @@ namespace Reservasi_Hotel
                     tgl = reader.GetDateTime("tgl_masuk").ToString("yyyy-M-d");
                     jam = reader.GetTimeSpan("jam_masuk").ToString();
                     label6.Text = konversi_tgl_jam(tgl, jam);
-                    tgl_c = tgl;
-                    jam_c = jam;
 
                     tgl = DateTime.Now.ToString("yyyy-M-d");
                     jam = DateTime.Now.ToString("H:m:s");
                     label8.Text = konversi_tgl_jam(tgl, jam);
-
-                    tgl_awal = reader.GetDateTime("tgl_masuk");
-                    tgl_akhir = DateTime.Now;
                 }
                 conn.Close();
-
-                jumlah_ekstra_bed(nomor_kamar);
-                lama_sewa = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
-                lama_sewa++;
-                harga_total += (lama_sewa * 100000);
-                //label7.Text = "Rp. " + harga_total;
-                
-                SQL = "SELECT temp_bayar FROM reservasi WHERE id=" + id_reservasi + ";";
-                conn.Open();
-                cmd = new MySqlCommand(SQL, conn);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    temp_bayar = reader.GetInt32("temp_bayar");
-                }
-                conn.Close();
-                label7.Text = "Rp. " + (harga_total - temp_bayar);
             }
             catch (Exception ex)
             {
@@ -149,7 +127,7 @@ namespace Reservasi_Hotel
 
                 jumlah_extra_bed = 0;
                 lama_sewa_extra_bed = 0;
-                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti FROM extra_bed, reservasi WHERE reservasi.id=extra_bed.id_reservasi AND reservasi.id_kamar='" + nomor_kamar + "'";
+                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti FROM extra_bed, reservasi WHERE reservasi.id_reservasi=extra_bed.id_reservasi AND reservasi.id_kamar='" + nomor_kamar + "'";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -186,13 +164,23 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string SQL = "SELECT id FROM reservasi WHERE id_kamar=" + nomor_kamar + " AND status_out=0;";
+                string SQL = "SELECT id_reservasi FROM reservasi WHERE id_kamar=" + nomor_kamar + " AND status_out=0;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    id_reservasi = Convert.ToInt32(reader.GetString("id"));
+                    id_reservasi = Convert.ToInt32(reader.GetString("id_reservasi"));
+                }
+                conn.Close();
+
+                SQL = "SELECT id_transaksi FROM transaksi WHERE id_reservasi=" + id_reservasi + " AND id_tamu=" + id_tamu + ";";
+                conn.Open();
+                cmd = new MySqlCommand(SQL, conn);
+                reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    id_trx = Convert.ToInt32(reader.GetString("id_transaksi"));
                 }
                 conn.Close();
 
@@ -206,40 +194,46 @@ namespace Reservasi_Hotel
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            try
+            if (int.Parse((textBox1.Text)) > sisaBayar)
             {
-                //string tgl, jam;
-                //tgl = DateTime.Now.ToString("yyyy-M-d");
-                //jam = DateTime.Now.ToString("H:m:s");
-                string SQL = "insert into transaksi values(null," + id_reservasi + ",'" + id_tamu_s + "','"+ tgl_c +"','"+ jam_c +"',null,null," + textBox1.Text + ")";
-                //MessageBox.Show(SQL);
-                //SET tgl_check_out='" + tgl + "', jam_check_out='" + jam + "', jumlah_bayar='" + harga_total + "' WHERE id=" + id_trx + ";";
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand(SQL, conn);
-                MySqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    
-                }
-                conn.Close();
-
-                SQL = "UPDATE reservasi SET temp_bayar='" + (Convert.ToInt32(textBox1.Text) + temp_bayar) + "' WHERE id=" + id_reservasi + ";";
-                conn.Open();
-                cmd = new MySqlCommand(SQL, conn);
-                reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-
-                }
-                conn.Close();
-
-                MessageBox.Show("Berhasil melakukan pembayaran!", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                button1.Enabled = false;
+                MessageBox.Show("Silahkan periksa kembali nominal pembayaran!");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);
-                conn.Close();
+                try
+                {
+                    string tgl, jam;
+                    tgl = DateTime.Now.ToString("yyyy-M-d");
+                    jam = DateTime.Now.ToString("H:m:s");
+                    string SQL = "UPDATE transaksi SET tgl_keluar='" + tgl + "', jam_keluar='" + jam + "', jumlah_bayar='" + textBox1.Text + "' WHERE id_transaksi=" + id_trx + ";";
+                    conn.Open();
+                    MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                    }
+                    conn.Close();
+
+                    SQL = "UPDATE reservasi SET temp_bayar= temp_bayar + '" + textBox1.Text + "' WHERE id_reservasi=" + id_reservasi + ";";
+                    MessageBox.Show(SQL);
+                    conn.Open();
+                    cmd = new MySqlCommand(SQL, conn);
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                    }
+                    conn.Close();
+
+                    MessageBox.Show("Berhasil melakukan pembayaran!", "Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    button1.Enabled = false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    conn.Close();
+                }
             }
         }
     }

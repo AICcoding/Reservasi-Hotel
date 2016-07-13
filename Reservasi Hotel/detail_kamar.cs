@@ -28,6 +28,11 @@ namespace Reservasi_Hotel
 
         int id_reservasi, tarif_kamar, temp_bayar, sisaBayar, lama_sewa, tarif_total, jumlah_extra_bed, lama_sewa_extra_bed;
 
+        //rekomendasi
+        public List<DateTime> tgl_masuk_tamu = new List<DateTime>();
+        public List<string> nama = new List<string>();
+        public List<int> tarif = new List<int>();
+
         public List<String> id_tamu;
 
         public detail_kamar()
@@ -42,6 +47,7 @@ namespace Reservasi_Hotel
             cari_id_transaksi_dan_reservasi();
             cari_total_bayar();
             cari_sisa_bayar();
+            rekomendasi();
             label10.Text = "Rp " + sisaBayar.ToString() + ",-";
         }
 
@@ -58,21 +64,35 @@ namespace Reservasi_Hotel
                 else if (jumlahOrang > 1 && dataGridView2.Rows.Count == 1)
                 {
                     MessageBox.Show("Ini merupakan rancangan tagihan untuk BUKAN org terakhir (1 org)");
-                    pembayaran2 b = new pembayaran2(nomorKamar, dataGridView2.Rows[0].Cells[0].Value.ToString(), Convert.ToInt32(label10.Text));
+                    pembayaran2 b = new pembayaran2(nomorKamar, dataGridView2.Rows[0].Cells[0].Value.ToString(), sisaBayar);
                     DialogResult dr1 = b.ShowDialog();
                 }
                 else if (jumlahOrang > dataGridView2.Rows.Count && dataGridView2.Rows.Count > 1)
                 {
 
                     MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan MASIH ada org di kamar");
-                    pembayaran3 c = new pembayaran3();
+                    List<string> id_tamu = new List<string>();
+                    List<string> nama_tamu = new List<string>();
+                    for(int i = 0; i < dataGridView2.Rows.Count; i++)
+                    {
+                        id_tamu.Add(dataGridView2.Rows[i].Cells[0].Value.ToString());
+                        nama_tamu.Add(dataGridView2.Rows[i].Cells[1].Value.ToString());
+                    }
+                    pembayaran3 c = new pembayaran3(nomorKamar, id_tamu, nama_tamu, sisaBayar);
                     DialogResult dr2 = c.ShowDialog();
                 }
                 else if (jumlahOrang == dataGridView2.Rows.Count)
                 {
-
                     MessageBox.Show("Ini merupakan rancangan tagihan untuk pelanggan yg barengan check out dan TIDAK ada org di kamar");
-                    pembayaran4 d = new pembayaran4();
+                    List<string> id_tamu = new List<string>();
+                    List<string> nama_tamu = new List<string>();
+                    for (int i = 0; i < dataGridView2.Rows.Count; i++)
+                    {
+                        id_tamu.Add(dataGridView2.Rows[i].Cells[0].Value.ToString());
+                        nama_tamu.Add(dataGridView2.Rows[i].Cells[1].Value.ToString());
+                    }
+
+                    pembayaran4 d = new pembayaran4(nomorKamar, id_tamu, nama_tamu, sisaBayar);
                     DialogResult dr3 = d.ShowDialog();
                 }
             }
@@ -259,7 +279,6 @@ namespace Reservasi_Hotel
 
             jumlah_ekstra_bed(nomorKamar);
             lama_sewa = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
-            lama_sewa++;
             tarif_total += (lama_sewa * tarif_kamar);
         }
 
@@ -276,6 +295,42 @@ namespace Reservasi_Hotel
             conn.Close();
 
             sisaBayar = tarif_total - temp_bayar;
+        }
+
+        private void rekomendasi()
+        {
+            SQL = "SELECT * FROM rekomendasi WHERE id_reservasi=" + id_reservasi + ";";
+            conn.Open();
+            cmd = new MySqlCommand(SQL, conn);
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                nama.Add(reader.GetString("nama"));
+                tgl_masuk_tamu.Add(reader.GetDateTime("tgl_masuk"));
+            }
+            conn.Close();
+            tgl_akhir = new DateTime(2016, 7, 20);
+            int range = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
+            MessageBox.Show(range.ToString());
+
+            int jumlah; //Jumlah orang pada tanggal x
+            for(int i = 0; i < range; i++)
+            {
+                jumlah = 0;
+                for(int j = 0; j < nama.Count; j++)
+                {
+                    MessageBox.Show("sekarang si " + nama[j].ToString());
+                    if((tgl_awal.AddDays(i) >= tgl_masuk_tamu[j]))
+                    {
+                        jumlah++;
+                        MessageBox.Show("tambah satu");
+                    }
+                    //tarif[j] += tarif_kamar;
+                }
+                MessageBox.Show("tanggal segini: " + tgl_awal.AddDays(i).ToString() + " terdapat " + jumlah + " orang");
+            }
+
+            
         }
     }
 }
