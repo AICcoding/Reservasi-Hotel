@@ -17,6 +17,7 @@ namespace Reservasi_Hotel
         {
             InitializeComponent();
             cek_tgl_jam(DateTime.Now.ToString());
+            label6.Text = "Home";
         }
 
         private void cek_tgl_jam(string date)
@@ -109,6 +110,60 @@ namespace Reservasi_Hotel
         {
             tarif a = new tarif();
             DialogResult dr = a.ShowDialog();
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            buat_navigasi_tree_view();
+            string pilihan = treeView1.SelectedNode.Text;
+            switch (pilihan)
+            {
+                case "Check in":
+                    check_in ci = new check_in();
+                    DialogResult dci = ci.ShowDialog();
+                    break;
+                case "Check out":
+                    cari_no_kamar co = new cari_no_kamar();
+                    DialogResult dco = co.ShowDialog();
+                    break;
+                case "Extra bed":
+                    extra_bed eb = new extra_bed();
+                    DialogResult deb = eb.ShowDialog();
+                    break;
+                case "Room":
+                    kamar r = new kamar();
+                    DialogResult dr = r.ShowDialog();
+                    break;
+                case "Price":
+                    tarif p = new tarif();
+                    DialogResult dp = p.ShowDialog();
+                    break;
+                case "Consumption":
+                    konsumsi c = new konsumsi();
+                    DialogResult dc = c.ShowDialog();
+                    break;
+
+            }
+        }
+        
+        private void buat_navigasi_tree_view()
+        {
+            string dir = treeView1.SelectedNode.FullPath.ToString();
+            string[] tmp_dir = dir.Split('\\');
+            string hasil = "Home>";
+            for (int i = 0; i < tmp_dir.Length; i++)
+            {
+                if(i<tmp_dir.Length-1)
+                {
+                    hasil += tmp_dir[i] + ">";
+                }
+                else
+                {
+                    hasil += tmp_dir[i];
+
+                }
+            }
+            label6.Text = hasil;    
         }
     }
 }
