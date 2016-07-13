@@ -32,6 +32,7 @@ namespace Reservasi_Hotel
         public List<DateTime> tgl_masuk_tamu = new List<DateTime>();
         public List<string> nama = new List<string>();
         public List<int> tarif = new List<int>();
+        List<int> mark = new List<int>();
 
         public List<String> id_tamu;
 
@@ -307,11 +308,14 @@ namespace Reservasi_Hotel
             {
                 nama.Add(reader.GetString("nama"));
                 tgl_masuk_tamu.Add(reader.GetDateTime("tgl_masuk"));
+                tarif.Add(0);
+                mark.Add(0);
             }
             conn.Close();
-            tgl_akhir = new DateTime(2016, 7, 20);
+            tgl_akhir = new DateTime(2016, 7, 20, 16,0,0);
+
             int range = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
-            MessageBox.Show(range.ToString());
+            //MessageBox.Show(range.ToString());
 
             int jumlah; //Jumlah orang pada tanggal x
             for(int i = 0; i < range; i++)
@@ -319,15 +323,25 @@ namespace Reservasi_Hotel
                 jumlah = 0;
                 for(int j = 0; j < nama.Count; j++)
                 {
-                    MessageBox.Show("sekarang si " + nama[j].ToString());
                     if((tgl_awal.AddDays(i) >= tgl_masuk_tamu[j]))
                     {
                         jumlah++;
-                        MessageBox.Show("tambah satu");
+                        mark[j] = 1;
                     }
-                    //tarif[j] += tarif_kamar;
                 }
-                MessageBox.Show("tanggal segini: " + tgl_awal.AddDays(i).ToString() + " terdapat " + jumlah + " orang");
+                //MessageBox.Show("tanggal segini: " + tgl_awal.AddDays(i).ToString() + " terdapat " + jumlah + " orang");
+
+                for (int j = 0; j < nama.Count; j++)
+                {
+                    if(mark[j] == 1)
+                    {
+                        tarif[j] += tarif_kamar / jumlah;
+                        mark[j] = 0;
+                    }
+
+                    //MessageBox.Show("tanggal segini: " + tgl_awal.AddDays(i).ToString() + " si " + nama[j] + " bayar " + tarif[j]);
+                }
+                
             }
 
             
