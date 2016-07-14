@@ -92,7 +92,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(80, 55);
+            this.groupBox1.Location = new System.Drawing.Point(99, 55);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(612, 315);
             this.groupBox1.TabIndex = 2;
@@ -161,11 +161,11 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Verdana", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Font = new System.Drawing.Font("Verdana", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.Green;
             this.label7.Location = new System.Drawing.Point(17, 258);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(143, 23);
+            this.label7.Size = new System.Drawing.Size(177, 29);
             this.label7.TabIndex = 6;
             this.label7.Text = "Rp. 100.000";
             // 
@@ -233,11 +233,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(767, 425);
+            this.ClientSize = new System.Drawing.Size(804, 449);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(783, 464);
+            this.MaximumSize = new System.Drawing.Size(820, 488);
+            this.MinimumSize = new System.Drawing.Size(820, 488);
             this.Name = "pembayaran1";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pembayaran";
             this.groupBox1.ResumeLayout(false);

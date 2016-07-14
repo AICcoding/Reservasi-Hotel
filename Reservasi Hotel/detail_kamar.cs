@@ -50,6 +50,26 @@ namespace Reservasi_Hotel
             cari_sisa_bayar();
             rekomendasi();
             label10.Text = "Rp " + format_idr(sisaBayar.ToString()) + ",-";
+            isi_yang_sudah_bayar();
+        }
+
+        private void isi_yang_sudah_bayar()
+        {
+            using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transaksi_tamu WHERE id_kamar = " + nomorKamar + " AND status_check_out = 1;", conn))
+            {
+                conn.Open();
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+                int i = -1;
+                while (dataReader.Read())
+                {
+                    i += 1;
+                    dataGridView1.Rows.Add(1);
+                    dataGridView1.Rows[i].Cells[0].Value = dataReader.GetString("nama");
+                    dataGridView1.Rows[i].Cells[1].Value = dataReader.GetDateTime("tgl_keluar").ToString("d-M-yyyy");
+                    dataGridView1.Rows[i].Cells[2].Value = dataReader.GetString("jumlah_bayar");
+                }
+                conn.Close();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -106,7 +126,7 @@ namespace Reservasi_Hotel
         private void isiComboBox()
         {
             id_tamu = new List<String>();
-            using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transaksi_tamu WHERE id_kamar = " + nomorKamar + " AND tgl_keluar is null;", conn))
+            using (MySqlCommand cmd = new MySqlCommand("SELECT * FROM transaksi_tamu WHERE id_kamar = " + nomorKamar + " AND status_check_out = 0;", conn))
             {
                 conn.Open();
                 jumlahOrang = 0;
@@ -258,30 +278,29 @@ namespace Reservasi_Hotel
 
                 jumlah_extra_bed = 0;
                 lama_sewa_extra_bed = 0;
-                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti FROM extra_bed, reservasi WHERE reservasi.id_reservasi=extra_bed.id_reservasi AND reservasi.id_kamar='" + nomor_kamar + "'";
+                string SQL = "SELECT extra_bed.tgl_sewa, extra_bed.tgl_berhenti, nominal, status_selesai FROM extra_bed, reservasi, tarif WHERE reservasi.id_reservasi=extra_bed.id_reservasi AND extra_bed.id_tarif=tarif.id_tarif AND reservasi.id_kamar='" + nomor_kamar + "' AND status_out=0";
+
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    if (Convert.IsDBNull(reader["tgl_berhenti"]))
+                    if(reader.GetString("status_selesai")=="1")
                     {
                         tgl_awal = reader.GetDateTime("tgl_sewa");
-                        tgl_akhir = DateTime.Now;
+                        tgl_akhir = reader.GetDateTime("tgl_berhenti");
+                        lama_sewa_extra_bed = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
+                        tarif_total += (lama_sewa_extra_bed * Convert.ToInt32(reader.GetString("nominal")));
                     }
                     else
                     {
                         tgl_awal = reader.GetDateTime("tgl_sewa");
-                        tgl_akhir = reader.GetDateTime("tgl_berhenti");
-                    }
-
-
-                    jumlah_extra_bed += 1;
-                    lama_sewa_extra_bed += Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
+                        tgl_akhir = DateTime.Now;
+                        lama_sewa_extra_bed = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
+                        tarif_total += (lama_sewa_extra_bed * Convert.ToInt32(reader.GetString("nominal")));
+                    }              
                 }
                 conn.Close();
-
-                tarif_total += (lama_sewa_extra_bed * jumlah_extra_bed * 50000);
             }
             catch (Exception ex)
             {
@@ -313,9 +332,31 @@ namespace Reservasi_Hotel
             }
             conn.Close();
 
+            //ubah_status_extra_bed(id_reservasi.ToString());
             jumlah_ekstra_bed(nomorKamar);
             lama_sewa = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
             tarif_total += (lama_sewa * tarif_kamar);
+        }
+
+        private void ubah_status_extra_bed(string id_reservasi)
+        {
+            try
+            {
+                string SQL = "UPDATE extra_bed SET status_selesai=1, tgl_berhenti='" + DateTime.Now.ToString("yyyy-M-d") +"' WHERE id_reservasi='" + id_reservasi + "';";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    
+                }
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
         }
 
         private void cari_sisa_bayar()

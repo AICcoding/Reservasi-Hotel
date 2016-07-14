@@ -16,6 +16,7 @@ namespace Reservasi_Hotel
         MySqlConnection conn = conectionservice.getconection();
         int jumlah_extra_bed, lama_sewa_extra_bed, harga_total, id_trx, id_reservasi;
         int sisaBayar;
+
         public pembayaran1(int nomor_kamar, string id_tamu, int sisaBayar)
         {
             InitializeComponent();
@@ -23,8 +24,44 @@ namespace Reservasi_Hotel
             cari_id_transaksi_dan_reservasi(nomor_kamar, id_tamu);
             init(nomor_kamar, id_tamu);
             this.sisaBayar = sisaBayar;
-            label7.Text = "Rp " + sisaBayar + ",-";
+            label7.Text = "Rp " + format_idr(sisaBayar.ToString()) + ",-";
         }
+
+        private string format_idr(string input)
+        {
+            int hitung;
+            string tmp, hasil_nominal;
+            char[] tmp_input;
+
+            tmp = input;
+            tmp = tmp.Replace(".", "");
+            hasil_nominal = "";
+            hitung = 2 - ((tmp.Length) % 3);
+            tmp_input = tmp.ToCharArray();
+
+            foreach (char karakter in tmp_input)
+            {
+                if (hitung == 2)
+                {
+                    if (hasil_nominal == "")
+                    {
+                        hasil_nominal += karakter;
+                        hitung = 0;
+                    }
+                    else
+                    {
+                        hasil_nominal += "." + karakter;
+                        hitung = 0;
+                    }
+                }
+                else
+                {
+                    hasil_nominal += karakter;
+                    hitung += 1;
+                }
+            }
+            return hasil_nominal;
+        }  
 
         private void init(int nomor_kamar, string id_tamu)
         {

@@ -29,11 +29,48 @@ namespace Reservasi_Hotel
             this.id_tamu = id_tamu;
             this.nama_tamu = nama_tamu;
             this.sisaBayar = sisaBayar;
-            label7.Text = "Rp " + sisaBayar.ToString() + ",-";
+            label7.Text = "Rp " + format_idr(sisaBayar.ToString()) + ",-";
             
             isi_combo_box();
             init(this.nomor_kamar, this.id_tamu[comboBox1.SelectedIndex]);
         }
+
+        private string format_idr(string input)
+        {
+            int hitung;
+            string tmp, hasil_nominal;
+            char[] tmp_input;
+
+            tmp = input;
+            tmp = tmp.Replace(".", "");
+            hasil_nominal = "";
+            hitung = 2 - ((tmp.Length) % 3);
+            tmp_input = tmp.ToCharArray();
+
+            foreach (char karakter in tmp_input)
+            {
+                if (hitung == 2)
+                {
+                    if (hasil_nominal == "")
+                    {
+                        hasil_nominal += karakter;
+                        hitung = 0;
+                    }
+                    else
+                    {
+                        hasil_nominal += "." + karakter;
+                        hitung = 0;
+                    }
+                }
+                else
+                {
+                    hasil_nominal += karakter;
+                    hitung += 1;
+                }
+            }
+            return hasil_nominal;
+        }  
+
         private void init(int nomor_kamar, string id_tamu)
         {
             try
