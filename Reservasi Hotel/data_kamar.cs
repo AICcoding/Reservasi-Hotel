@@ -304,6 +304,11 @@ namespace Reservasi_Hotel
                 e.Handled = true;
             }
         }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
       
     }
 }

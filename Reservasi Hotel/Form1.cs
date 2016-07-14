@@ -118,6 +118,12 @@ namespace Reservasi_Hotel
             string pilihan = treeView1.SelectedNode.Text;
             switch (pilihan)
             {
+                case "Booking" :
+                    booking bo = new booking();
+                    DialogResult dbo = bo.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
+                    break;
                 case "Check in":
                     check_in ci = new check_in();
                     DialogResult dci = ci.ShowDialog();
