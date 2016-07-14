@@ -119,10 +119,12 @@ namespace Reservasi_Hotel
                     {
                         tambah_reservasi(nomor_kamar);
                         tambah_transaksi(nomor_kamar, id);
+                        update_tgl_out_reservasi(nomor_kamar);
                     }
                     else
                     {
                         tambah_transaksi(nomor_kamar, id);
+                        update_tgl_out_reservasi(nomor_kamar);
                     }
 
                     if(status_check_in==true)
@@ -144,11 +146,13 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string tgl_sekarang, jam_sekarang;
+                string tgl_sekarang, jam_sekarang, tgl_out, jam_out;
                 tgl_sekarang = DateTime.Now.ToString("yyyy-M-d");
                 jam_sekarang = DateTime.Now.ToString("H:m:s");
+                tgl_out = dateTimePicker1.Value.ToString("yyyy-M-d");
+                jam_out = "06:00:00";
 
-                string SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in, temp_bayar, status_out) VALUES ('" + id_kamar + "','" + tgl_sekarang + "','" + jam_sekarang + "', 0, 0);";
+                string SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in, tgl_check_out, jam_check_out, temp_bayar, status_out) VALUES ('" + id_kamar + "','" + tgl_sekarang + "','" + jam_sekarang + "', '" + tgl_out + "', '" + jam_out + "', 0, 0);";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -169,9 +173,11 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string tgl_sekarang, jam_sekarang, id_reservasi;
+                string tgl_sekarang, jam_sekarang, id_reservasi, tgl_out, jam_out;
                 tgl_sekarang = DateTime.Now.ToString("yyyy-M-d");
                 jam_sekarang = DateTime.Now.ToString("H:m:s");
+                tgl_out = dateTimePicker1.Value.ToString("yyyy-M-d");
+                jam_out = DateTime.Now.ToString("H:m:s");
                 id_reservasi = "";
 
                 string SQL = "SELECT id_reservasi FROM reservasi WHERE id_kamar="+id_kamar+" AND status_out=0 ORDER BY id_reservasi DESC;";
@@ -185,7 +191,7 @@ namespace Reservasi_Hotel
                 }
                 conn.Close();
 
-                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu, tgl_masuk, jam_masuk, jumlah_bayar) VALUES ('" + id_reservasi + "', '" + id_tamu + "', '" + tgl_sekarang + "', '" + jam_sekarang + "', 0);";
+                SQL = "INSERT INTO transaksi (id_reservasi, id_tamu, tgl_masuk, jam_masuk, tgl_keluar, jam_keluar, jumlah_bayar) VALUES ('" + id_reservasi + "', '" + id_tamu + "', '" + tgl_sekarang + "', '" + jam_sekarang + "', '" + tgl_out + "', '" + jam_out + "', 0);";
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
                 reader = cmd.ExecuteReader();
@@ -203,6 +209,64 @@ namespace Reservasi_Hotel
             }
         }
         
+        private void update_tgl_out_reservasi(string id_kamar)
+        {            
+            try
+            {
+                DateTime tgl_out_baru, tgl_out_lama;          
+                tgl_out_baru = dateTimePicker1.Value;
+                tgl_out_lama = dateTimePicker1.Value;
+
+                TimeSpan jam_out_lama, jam_out_baru;
+                jam_out_lama = DateTime.Now.TimeOfDay;
+                jam_out_baru = DateTime.Now.TimeOfDay;
+
+                string SQL = "SELECT tgl_check_out, jam_check_out FROM reservasi WHERE id_kamar=" + id_kamar + " AND status_out=0 ORDER BY id_reservasi DESC;";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    tgl_out_lama = reader.GetDateTime("tgl_check_out");
+                    jam_out_lama = reader.GetTimeSpan("jam_check_out");
+                    break;
+                }
+                conn.Close();
+
+                if ((tgl_out_baru - tgl_out_lama).TotalDays > 0)
+                {
+                    SQL = "UPDATE reservasi set tgl_check_out='" + tgl_out_baru.ToString("yyyy-M-d") + "' WHERE id_kamar=" + id_kamar + " AND status_out=0;";
+                    conn.Open();
+                    cmd = new MySqlCommand(SQL, conn);
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        
+                    }
+                    conn.Close();
+                }
+                
+                /*
+                if (Convert.ToDouble((jam_out_baru - jam_out_lama).TotalHours) > 0F)
+                {
+                    SQL = "UPDATE reservasi set jam_check_out='" + jam_out_baru.ToString("H:m:s") + "' WHERE id_kamar=" + id_kamar + " AND status_out=0;";
+                    conn.Open();
+                    cmd = new MySqlCommand(SQL, conn);
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+
+                    }
+                    conn.Close();
+                } */   
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
+        }
+
         private bool sudah_ada_reservasi(string no_kamar)
         {
             try

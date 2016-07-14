@@ -80,7 +80,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(743, 402);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(780, 426);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // groupBox2
@@ -97,15 +97,16 @@
             this.groupBox2.Controls.Add(this.comboBox1);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.label16);
-            this.groupBox2.Location = new System.Drawing.Point(448, 3);
+            this.groupBox2.Location = new System.Drawing.Point(471, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(292, 396);
+            this.groupBox2.Size = new System.Drawing.Size(306, 420);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(10, 297);
+            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button5.Location = new System.Drawing.Point(10, 317);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(93, 23);
             this.button5.TabIndex = 14;
@@ -115,7 +116,8 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(118, 240);
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button4.Location = new System.Drawing.Point(118, 260);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(93, 23);
             this.button4.TabIndex = 13;
@@ -125,7 +127,8 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(10, 241);
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button3.Location = new System.Drawing.Point(10, 261);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(102, 23);
             this.button3.TabIndex = 12;
@@ -157,7 +160,7 @@
             this.dataGridView2.Location = new System.Drawing.Point(10, 88);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersVisible = false;
-            this.dataGridView2.Size = new System.Drawing.Size(276, 146);
+            this.dataGridView2.Size = new System.Drawing.Size(290, 170);
             this.dataGridView2.TabIndex = 9;
             // 
             // id
@@ -193,7 +196,7 @@
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
             this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.button1.Location = new System.Drawing.Point(171, 314);
+            this.button1.Location = new System.Drawing.Point(185, 338);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(115, 69);
             this.button1.TabIndex = 8;
@@ -230,7 +233,7 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(439, 396);
+            this.groupBox1.Size = new System.Drawing.Size(462, 420);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -269,7 +272,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(9, 237);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(421, 146);
+            this.dataGridView1.Size = new System.Drawing.Size(444, 170);
             this.dataGridView1.TabIndex = 8;
             // 
             // Column1
@@ -371,11 +374,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(767, 425);
+            this.ClientSize = new System.Drawing.Size(804, 449);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(783, 464);
+            this.MinimumSize = new System.Drawing.Size(820, 488);
             this.Name = "detail_kamar";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Detail Kamar";
             this.Load += new System.EventHandler(this.detail_kamar_Load);

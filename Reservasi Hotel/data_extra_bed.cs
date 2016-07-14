@@ -50,7 +50,7 @@ namespace Reservasi_Hotel
         {
             try
             {
-                string SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif WHERE nama_tarif LIKE '%bed%'ORDER BY nama_tarif ASC;";
+                string SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif WHERE nama_tarif LIKE '%bed%' ORDER BY nama_tarif ASC;";
                 conn.Open();
                 MySqlCommand cmd = new MySqlCommand(SQL, conn);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -103,7 +103,7 @@ namespace Reservasi_Hotel
                 }
                 conn.Close();
 
-                SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif ORDER BY nama_tarif ASC;";
+                SQL = "SELECT id_tarif, nama_tarif, nominal FROM tarif WHERE nama_tarif LIKE '%bed%' ORDER BY nama_tarif ASC;";
                 conn.Open();
                 cmd = new MySqlCommand(SQL, conn);
                 reader = cmd.ExecuteReader();

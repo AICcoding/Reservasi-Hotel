@@ -17,36 +17,52 @@ namespace Reservasi_Hotel
         public cari_no_kamar()
         {
             InitializeComponent();
-            isi_kamar();
+            load_kamar();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string no_kamar = comboBox1.SelectedItem.ToString();
-            if(cek_kamar_sudah_terisi(no_kamar)==true)
+            try
             {
-                detail_kamar a = new detail_kamar();
-                a.nomorKamar = Convert.ToInt32(comboBox1.SelectedItem.ToString());
-                DialogResult dr = a.ShowDialog();
+                string no_kamar = dataGridView1.Rows[dataGridView1.CurrentCell.RowIndex].Cells[0].Value.ToString();
+                if (cek_kamar_sudah_terisi(no_kamar) == true)
+                {
+                    detail_kamar a = new detail_kamar();
+                    a.nomorKamar = Convert.ToInt32(no_kamar);
+                    DialogResult dr = a.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show("Kamar " + no_kamar + " Kosong!", "Gagal check out", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
-            {
-                MessageBox.Show("Kamar " + no_kamar + " Kosong!", "Gagal check out", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
+            catch (Exception er) { }            
+        } 
 
-        private void isi_kamar()
+        private void load_kamar()
         {
-            comboBox1.Items.Add("1");
-            comboBox1.Items.Add("2");
-            comboBox1.Items.Add("3");
-            comboBox1.Items.Add("4");
-            comboBox1.Items.Add("5");
-            comboBox1.Items.Add("6");
-            comboBox1.Items.Add("7");
-            comboBox1.Items.Add("8");
-            comboBox1.SelectedIndex = 0;
-        }
+            try
+            {
+                string SQL = "SELECT id_kamar, lantai FROM kamar ORDER BY id_kamar ASC;";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                int i = -1;
+                while (reader.Read())
+                {
+                    dataGridView1.Rows.Add();
+                    i+=1;
+                    dataGridView1.Rows[i].Cells[0].Value = reader.GetString("id_kamar");
+                    dataGridView1.Rows[i].Cells[1].Value = reader.GetString("lantai");
+                }
+                conn.Close();               
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
+        }     
 
         private bool cek_kamar_sudah_terisi(string id_kamar)
         {
@@ -74,5 +90,11 @@ namespace Reservasi_Hotel
                 return false;
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    
     }
 }

@@ -49,7 +49,7 @@ namespace Reservasi_Hotel
             cari_total_bayar();
             cari_sisa_bayar();
             rekomendasi();
-            label10.Text = "Rp " + sisaBayar.ToString() + ",-";
+            label10.Text = "Rp " + format_idr(sisaBayar.ToString()) + ",-";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -113,13 +113,12 @@ namespace Reservasi_Hotel
                 MySqlDataReader dataReader = cmd.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    id_tamu.Add(dataReader.GetString(2));
-                    comboBox1.Items.Add(dataReader.GetString(3));
+                    id_tamu.Add(dataReader.GetString("id_tamu"));
+                    comboBox1.Items.Add(dataReader.GetString("nama"));
                     jumlahOrang++;
                 }
                 conn.Close();
             }
-
             comboBox1.SelectedIndex = 0;
         }
 
@@ -141,8 +140,44 @@ namespace Reservasi_Hotel
             }
             label5.Text = nomorKamar.ToString();
             label6.Text = tgl_check_in.ToString("dd-MM-yyyy") + " (" + jam_check_in.ToString("HH:mm") + ")";
-            label7.Text = "Rp " + totalTerbayar.ToString() + ",-";
+            label7.Text = "Rp " + format_idr(totalTerbayar.ToString()) + ",-";
         }
+
+        private string format_idr(string input)
+        {
+            int hitung;
+            string tmp, hasil_nominal;
+            char[] tmp_input;
+
+            tmp = input;
+            tmp = tmp.Replace(".", "");
+            hasil_nominal = "";
+            hitung = 2 - ((tmp.Length) % 3);
+            tmp_input = tmp.ToCharArray();
+
+            foreach (char karakter in tmp_input)
+            {
+                if (hitung == 2)
+                {
+                    if (hasil_nominal == "")
+                    {
+                        hasil_nominal += karakter;
+                        hitung = 0;
+                    }
+                    else
+                    {
+                        hasil_nominal += "." + karakter;
+                        hitung = 0;
+                    }
+                }
+                else
+                {
+                    hasil_nominal += karakter;
+                    hitung += 1;
+                }
+            }
+            return hasil_nominal;
+        }  
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -346,5 +381,6 @@ namespace Reservasi_Hotel
 
             
         }
+   
     }
 }

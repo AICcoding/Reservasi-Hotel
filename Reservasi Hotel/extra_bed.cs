@@ -48,7 +48,7 @@ namespace Reservasi_Hotel
                     dataGridView1.Rows[i].Cells[2].Value = konversi_tgl(reader.GetDateTime("tgl_berhenti").ToString("yyyy-M-d"));
                     tgl_awal = reader.GetDateTime("tgl_sewa");
                     tgl_akhir = reader.GetDateTime("tgl_berhenti");
-                    sisa_hari = Convert.ToInt32((tgl_akhir - tgl_sekarang).TotalDays) + 1;
+                    sisa_hari = Convert.ToInt32((tgl_akhir - tgl_awal).TotalDays);
                     if(sisa_hari < 1)
                     {
                         dataGridView1.Rows[i].Cells[3].Value = "Extra bed expired";

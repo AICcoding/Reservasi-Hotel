@@ -121,28 +121,39 @@ namespace Reservasi_Hotel
                 case "Check in":
                     check_in ci = new check_in();
                     DialogResult dci = ci.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
                 case "Check out":
                     cari_no_kamar co = new cari_no_kamar();
                     DialogResult dco = co.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
                 case "Extra bed":
                     extra_bed eb = new extra_bed();
                     DialogResult deb = eb.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
                 case "Room":
                     kamar r = new kamar();
                     DialogResult dr = r.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
                 case "Price":
                     tarif p = new tarif();
                     DialogResult dp = p.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
                 case "Consumption":
                     konsumsi c = new konsumsi();
                     DialogResult dc = c.ShowDialog();
+                    treeView1.SelectedNode = null;
+                    label6.Text = "Home>";
                     break;
-
             }
         }
         
@@ -165,5 +176,6 @@ namespace Reservasi_Hotel
             }
             label6.Text = hasil;    
         }
+    
     }
 }
