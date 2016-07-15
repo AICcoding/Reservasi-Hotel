@@ -59,21 +59,17 @@ namespace Reservasi_Hotel
             }
         }
 
-        private void booking_Load(object sender, EventArgs e)
+        void set_data(int mm, int yy)
         {
-            String sDate = DateTime.Now.ToString();
-            DateTime datevalue = (Convert.ToDateTime(sDate.ToString()));
-            int mm = datevalue.Month;
-            int yy = datevalue.Year;
             dataGridView1.ColumnCount = get_month(mm) + 1;
             for (int i = 1; i < dataGridView1.ColumnCount; i++)
             {
                 dataGridView1.Columns[i].HeaderText = i.ToString();
             }
-            for(int i=1; i < dataGridView1.ColumnCount; i++)
+            for (int i = 1; i < dataGridView1.ColumnCount; i++)
             {
                 dataGridView1.Columns[i].Width = 25;
-                for(int j=1; j < dataGridView1.RowCount; j++)
+                for (int j = 1; j < dataGridView1.RowCount; j++)
                 {
                     dataGridView1.Rows[j].Cells[i].Style.BackColor = Color.Yellow;
                 }
@@ -82,7 +78,7 @@ namespace Reservasi_Hotel
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(SQL, conn);
             MySqlDataReader reader = cmd.ExecuteReader();
-            int counter=0;
+            int counter = 0;
             while (reader.Read())
             {
                 dataGridView1.Rows.Add();
@@ -91,7 +87,7 @@ namespace Reservasi_Hotel
             }
             conn.Close();
 
-            
+
             for (int i = 1; i < dataGridView1.ColumnCount; i++)
             {
                 conn.Open();
@@ -102,9 +98,9 @@ namespace Reservasi_Hotel
                 counter = 0;
                 while (reader.Read())
                 {
-                    for (int x = 0; x < dataGridView1.RowCount - 1; x++ )
+                    for (int x = 0; x < dataGridView1.RowCount - 1; x++)
                     {
-                        if( dataGridView1.Rows[x].Cells[0].Value.ToString() == reader.GetString("id_kamar"))
+                        if (dataGridView1.Rows[x].Cells[0].Value.ToString() == reader.GetString("id_kamar"))
                         {
                             dataGridView1.Rows[x].Cells[i].Style.BackColor = Color.Red;
                         }
@@ -113,7 +109,57 @@ namespace Reservasi_Hotel
                 }
                 conn.Close();
             }
-            
+        }
+
+        private void booking_Load(object sender, EventArgs e)
+        {
+            String sDate = DateTime.Now.ToString();
+            DateTime datevalue = (Convert.ToDateTime(sDate.ToString()));
+            int mm = datevalue.Month;
+            int yy = datevalue.Year;
+            set_data(mm, yy);
+            textBox1.Text = yy.ToString();
+            textBox2.Text = mm.ToString();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int temp1, temp2;
+            temp1 = Convert.ToInt32(textBox1.Text);
+            temp2 = Convert.ToInt32(textBox2.Text);
+            if(temp2 == 1)
+            {
+                temp2 = 12;
+                temp1--;
+            }
+            else
+            {
+                temp2--;
+            }
+            textBox1.Text = temp1.ToString();
+            textBox2.Text = temp2.ToString();
+            dataGridView1.Rows.Clear();
+            set_data(temp2, temp1);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            int temp1, temp2;
+            temp1 = Convert.ToInt32(textBox1.Text);
+            temp2 = Convert.ToInt32(textBox2.Text);
+            if (temp2 == 12)
+            {
+                temp2 = 1;
+                temp1++;
+            }
+            else
+            {
+                temp2++;
+            }
+            textBox1.Text = temp1.ToString();
+            textBox2.Text = temp2.ToString();
+            dataGridView1.Rows.Clear();
+            set_data(temp2, temp1);
         }
     }
 }
