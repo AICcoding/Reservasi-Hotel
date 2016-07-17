@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50621
 File Encoding         : 65001
 
-Date: 2016-07-15 00:10:56
+Date: 2016-07-17 23:01:53
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,7 +34,7 @@ INDEX `fk_id_tarif2` (`id_tarif`) USING BTREE
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
-AUTO_INCREMENT=4
+AUTO_INCREMENT=5
 
 ;
 
@@ -42,7 +42,7 @@ AUTO_INCREMENT=4
 -- Records of extra_bed
 -- ----------------------------
 BEGIN;
-INSERT INTO `extra_bed` VALUES ('1', '1', '27', '2016-07-12', '2016-07-15', '1'), ('2', '9', '28', '2016-07-13', '2016-07-16', '0'), ('3', '8', '28', '2016-07-18', '2016-07-14', '1');
+INSERT INTO `extra_bed` VALUES ('1', '1', '27', '2016-07-12', '2016-07-15', '1'), ('2', '9', '28', '2016-07-13', '2016-07-16', '0'), ('3', '8', '28', '2016-07-18', '2016-07-14', '1'), ('4', '9', '28', '2016-07-15', '2016-07-16', '0');
 COMMIT;
 
 -- ----------------------------
@@ -148,7 +148,7 @@ AUTO_INCREMENT=10
 -- Records of reservasi
 -- ----------------------------
 BEGIN;
-INSERT INTO `reservasi` VALUES ('1', '101', '2016-07-12', '22:27:09', '2016-07-14', '21:34:06', '0', '1'), ('3', '102', '2016-07-14', '17:32:01', '2016-07-14', '21:34:09', '0', '1'), ('6', '201', '2016-07-14', '18:20:23', '2016-07-14', '18:20:24', '0', '1'), ('7', '201', '2016-07-14', '18:24:18', '2016-07-17', '18:24:18', '0', '1'), ('8', '201', '2016-07-14', '18:37:09', '2016-07-30', '06:00:00', '0', '1'), ('9', '101', '2016-07-14', '21:35:43', '2016-07-23', '06:00:00', '0', '0');
+INSERT INTO `reservasi` VALUES ('1', '101', '2016-07-12', '22:27:09', '2016-07-14', '21:34:06', '0', '1'), ('3', '102', '2016-07-14', '17:32:01', '2016-07-18', '21:34:09', '0', '0'), ('6', '201', '2016-07-14', '18:20:23', '2016-07-14', '18:20:24', '0', '1'), ('7', '201', '2016-07-14', '18:24:18', '2016-07-17', '18:24:18', '0', '1'), ('8', '201', '2016-07-14', '18:37:09', '2016-07-30', '06:00:00', '0', '0'), ('9', '101', '2016-07-16', '21:35:43', '2016-07-23', '06:00:00', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -171,7 +171,7 @@ DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
 -- Records of tamu
 -- ----------------------------
 BEGIN;
-INSERT INTO `tamu` VALUES ('1', '1', '1', '1'), ('13', 'Agus', 'bali', '085'), ('1313', 'I Putu Agus Suarya Wibawa', 'Klungkung city', '085737013771');
+INSERT INTO `tamu` VALUES ('1', '1', '1', '1'), ('13', 'Agus', 'bali', '085'), ('1313', 'I Putu Agus Suarya Wibawa', 'Klungkung city', '085737013771'), ('134', 'Agus', 'bali', '086'), ('55', 'Suarya', 'Bali timur', '0888');
 COMMIT;
 
 -- ----------------------------
@@ -219,7 +219,7 @@ INDEX `fk_id_tamu` (`id_tamu`) USING BTREE
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=latin1 COLLATE=latin1_swedish_ci
-AUTO_INCREMENT=25
+AUTO_INCREMENT=27
 
 ;
 
@@ -227,7 +227,7 @@ AUTO_INCREMENT=25
 -- Records of transaksi
 -- ----------------------------
 BEGIN;
-INSERT INTO `transaksi` VALUES ('23', '9', '1313', '2016-07-14', '21:35:43', '2016-07-16', '21:35:43', '0', '0'), ('24', '9', '13', '2016-07-14', '21:35:54', '2016-07-23', '21:35:54', '0', '0');
+INSERT INTO `transaksi` VALUES ('23', '9', '1313', '2016-07-14', '21:35:43', '2016-07-16', '21:35:43', '0', '0'), ('24', '8', '13', '2016-07-14', '21:35:54', '2016-07-23', '21:35:54', '0', '0'), ('25', '8', '134', '2016-07-17', '11:25:30', '2016-07-18', '11:25:30', '0', '0'), ('26', '3', '55', '2016-07-17', '11:25:48', '2016-07-18', '11:25:48', '0', '0');
 COMMIT;
 
 -- ----------------------------
@@ -281,7 +281,7 @@ INNER JOIN reservasi ON transaksi.id_reservasi = reservasi.id_reservasi ;
 -- ----------------------------
 -- Auto increment value for extra_bed
 -- ----------------------------
-ALTER TABLE `extra_bed` AUTO_INCREMENT=4;
+ALTER TABLE `extra_bed` AUTO_INCREMENT=5;
 
 -- ----------------------------
 -- Auto increment value for kamar
@@ -306,4 +306,4 @@ ALTER TABLE `tarif` AUTO_INCREMENT=29;
 -- ----------------------------
 -- Auto increment value for transaksi
 -- ----------------------------
-ALTER TABLE `transaksi` AUTO_INCREMENT=25;
+ALTER TABLE `transaksi` AUTO_INCREMENT=27;
