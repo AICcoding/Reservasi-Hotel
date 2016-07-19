@@ -100,18 +100,39 @@ namespace Reservasi_Hotel
             for (int i = 1; i < dataGridView1.ColumnCount; i++)
             {
                 conn.Open();
-                SQL = "SELECT id_kamar FROM reservasi WHERE tgl_check_in = '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' OR ( tgl_check_in <= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' AND tgl_check_out >= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "')";
+                SQL = "SELECT id_kamar FROM reservasi WHERE status_out=0 AND (tgl_check_in = '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' OR ( tgl_check_in <= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' AND tgl_check_out >= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "'))";
                 //SQL = "SELECT id_kamar FROM reservasi WHERE tgl_check_in = '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' OR ( tgl_check_in < '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' AND tgl_check_out >= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "')";
                 cmd = new MySqlCommand(SQL, conn);
                 reader = cmd.ExecuteReader();
                 counter = 0;
                 while (reader.Read())
                 {
-                    for (int x = 0; x < dataGridView1.RowCount - 1; x++)
+                    for (int x = 0; x < dataGridView1.RowCount; x++)
                     {
                         if (dataGridView1.Rows[x].HeaderCell.Value.ToString() == reader.GetString("id_kamar"))
                         {
                             dataGridView1.Rows[x].Cells[i-1].Style.BackColor = Color.Red;
+                        }
+                    }
+                    counter++;
+                }
+                conn.Close();
+            }
+            for (int i = 1; i < dataGridView1.ColumnCount; i++)
+            {
+                conn.Open();
+                SQL = "SELECT id_kamar FROM reservasi WHERE status_out=-1 AND (tgl_check_in = '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' OR ( tgl_check_in <= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' AND tgl_check_out >= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "'))";
+                //SQL = "SELECT id_kamar FROM reservasi WHERE tgl_check_in = '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' OR ( tgl_check_in < '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "' AND tgl_check_out >= '" + yy.ToString() + "-" + mm.ToString() + "-" + i.ToString() + "')";
+                cmd = new MySqlCommand(SQL, conn);
+                reader = cmd.ExecuteReader();
+                counter = 0;
+                while (reader.Read())
+                {
+                    for (int x = 0; x < dataGridView1.RowCount; x++)
+                    {
+                        if (dataGridView1.Rows[x].HeaderCell.Value.ToString() == reader.GetString("id_kamar"))
+                        {
+                            dataGridView1.Rows[x].Cells[i - 1].Style.BackColor = Color.Yellow;
                         }
                     }
                     counter++;
@@ -434,7 +455,35 @@ namespace Reservasi_Hotel
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("konden ade kode ne brow..");
+            //MessageBox.Show("konden ade kode ne brow..");
+            try
+            {
+                string tgl_in, tgl_out;
+                tgl_in = dateTimePicker1.Value.ToString("yyyy-M-d");
+                tgl_out = dateTimePicker2.Value.ToString("yyyy-M-d");
+
+                string SQL = "INSERT INTO reservasi (id_kamar, tgl_check_in, jam_check_in, tgl_check_out, jam_check_out, temp_bayar, status_out) VALUES ('" + label7.Text + "','" + tgl_in + "',null, '" + tgl_out + "',null, 0, -1);";
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(SQL, conn);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+
+                }
+                conn.Close();
+                MessageBox.Show("Booking Berhasil !", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dataGridView1.Rows.Clear();
+                int mm = Convert.ToInt32(textBox2.Text);
+                int yy = Convert.ToInt32(textBox1.Text);
+                set_data(mm, yy);
+                label9.Text = convert_string_bulan(mm) + " " + yy.ToString();
+                button1.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                conn.Close();
+            }
         }
 
     
